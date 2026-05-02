@@ -16,9 +16,9 @@ const PROJECTS = [
     area: '620 sqm',
     status: 'Completed',
     images: [
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1000&q=80',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80',
-      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&q=80',
+      'assets/projects/residence-01.jpeg',
+      'assets/projects/residence-02.jpeg',
+      'assets/projects/residence-03.jpeg',
     ],
     desc: 'Jal Villa is a waterfront retreat on the Alibaug coastline, designed around the monsoon. The building\'s massing — three interlocking volumes on a laterite plinth — responds to the tidal rhythm and the morning sun. Raw concrete, reclaimed teak, and local Konkan stone form a palette that weathers beautifully against the salt air. A central courtyard channels the southwest monsoon breeze through every room.',
   },
@@ -31,9 +31,9 @@ const PROJECTS = [
     area: '24,000 sqm',
     status: 'Completed',
     images: [
-      'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1000&q=80',
-      'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&q=80',
-      'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=600&q=80',
+      'assets/projects/residence-02.jpeg',
+      'assets/projects/residence-04.jpeg',
+      'assets/projects/residence-05.jpeg',
     ],
     desc: 'A 22-storey mixed-use tower in the Bandra–Kurla Complex, Vayu Tower integrates Grade-A office, retail, and a public atrium within a contemporary envelope informed by the Indian jali screen. The double-skin facade reduces solar heat gain by 38% without compromising views. A sky garden on the 14th floor acts as a social and ecological threshold — open to the city above the monsoon haze.',
   },
@@ -46,9 +46,9 @@ const PROJECTS = [
     area: '3,800 sqm',
     status: 'Completed',
     images: [
-      'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1000&q=80',
-      'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=600&q=80',
-      'https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=600&q=80',
+      'assets/projects/residence-03.jpeg',
+      'assets/projects/residence-01.jpeg',
+      'assets/projects/residence-05.jpeg',
     ],
     desc: 'Aranya Cultural Centre is a home for Bengaluru\'s performing and visual arts. Organised around a banyan-shaded courtyard — a deliberate echo of the traditional Indian agora — the building uses rough basalt walls to absorb Karnataka\'s heat while high clerestory windows flood galleries with northern diffused light. The 480-seat auditorium is tuned for Carnatic vocal and Bharatanatyam performance.',
   },
@@ -61,9 +61,9 @@ const PROJECTS = [
     area: '880 sqm',
     status: 'Completed',
     images: [
-      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1000&q=80',
-      'https://images.unsplash.com/photo-1477587458883-47145ed6979e?w=600&q=80',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&q=80',
+      'assets/projects/residence-04.jpeg',
+      'assets/projects/residence-03.jpeg',
+      'assets/projects/residence-01.jpeg',
     ],
     desc: 'Haveli Twelve reinterprets the Rajasthani haveli typology for contemporary family living. Set in a lane in Jaipur\'s old city, the house reveals its interior gradually — a threshold, a baithak, an inner courtyard, and finally the private quarters beyond. Hand-cut Dholpur stone, carved jali screens, and lime-plastered vaults honour local craft while carrying modern infrastructure invisibly.',
   },
@@ -76,9 +76,9 @@ const PROJECTS = [
     area: '6.4 ha masterplan',
     status: 'In Progress',
     images: [
-      'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=1000&q=80',
+      'assets/projects/residence-05.jpeg',
       'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&q=80',
-      'https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80',
+      'assets/projects/residence-02.jpeg',
     ],
     desc: 'A participatory masterplan for a 6.4-hectare stretch of Varanasi\'s ghats, developed with residents, priests, and the Varanasi Municipal Corporation. The proposal enhances the ritual life of the river while improving flood resilience, pedestrian access, and sanitation. Four phases over twelve years — preserving the layered temporal character of the ghats while making them safer for the millions who use them each year.',
   },
@@ -91,9 +91,9 @@ const PROJECTS = [
     area: '5,200 sqm',
     status: 'Completed',
     images: [
-      'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1000&q=80',
-      'https://images.unsplash.com/photo-1600607688969-a5bfcd646154?w=600&q=80',
-      'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80',
+      'assets/projects/residence-02.jpeg',
+      'assets/projects/residence-04.jpeg',
+      'assets/projects/residence-03.jpeg',
     ],
     desc: 'Lattice Hub is a technology campus in HITEC City designed around community, craft, and concentration. The facade — a deep concrete lattice inspired by Hyderabadi stone carving — reduces heat gain while casting geometric shadow patterns that move through the interior over the day. Inside: alcoves, open terraces, a central street, and a rooftop amphitheatre replace open-plan uniformity.',
   },
@@ -575,6 +575,9 @@ var FORM_TEMPLATE_ID = '';   // new template e.g. 'template_contact'
       btn.classList.remove('loading');
       span.textContent = 'Message Sent ✓';
       btn.style.background = '#4caf50';
+      if (window.innerWidth < 768) {
+        btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       setTimeout(function() {
         span.textContent = 'Send Message';
         btn.style.background = '';
@@ -606,6 +609,132 @@ var FORM_TEMPLATE_ID = '';   // new template e.g. 'template_contact'
       setTimeout(onSuccess, 900);
     }
   });
+})();
+
+/* ══════════════════════════════════════════════════════════
+   OPTIONAL CLIENT ACCESS — soft login + gated planning info
+   ══════════════════════════════════════════════════════════ */
+(function initClientAccess() {
+  const form       = document.getElementById('clientLoginForm');
+  const loginView  = document.getElementById('clientLoginView');
+  const portalView = document.getElementById('clientPortalView');
+  const welcome    = document.getElementById('clientWelcome');
+  const errorEl    = document.getElementById('clientFormError');
+  const chatBtn    = document.getElementById('clientChatBtn');
+  const contactBtn = document.getElementById('clientContactBtn');
+  const logoutBtn  = document.getElementById('clientLogoutBtn');
+  if (!form || !loginView || !portalView) return;
+
+  const CUSTOMER_KEY  = 'ars_customer_profile';
+  const CUSTOMERS_KEY = 'ars_customer_profiles';
+  const LEADS_KEY     = 'ars_leads';
+
+  function getSavedProfile() {
+    try { return JSON.parse(localStorage.getItem(CUSTOMER_KEY) || 'null'); }
+    catch (_) { return null; }
+  }
+
+  function setNavState(active) {
+    const link = document.querySelector('.nav-link[href="#client-access"], .nav-link[href="client-login.html"]');
+    if (link) link.textContent = active ? 'Client Area' : 'Client Login';
+  }
+
+  function showPortal(profile) {
+    loginView.hidden = true;
+    portalView.hidden = false;
+    setNavState(true);
+    if (welcome) {
+      const firstName = String(profile.name || 'Client').trim().split(/\s+/)[0];
+      welcome.textContent = 'Welcome, ' + firstName;
+    }
+  }
+
+  function showLogin() {
+    portalView.hidden = true;
+    loginView.hidden = false;
+    setNavState(false);
+  }
+
+  function saveProfile(profile) {
+    try {
+      localStorage.setItem(CUSTOMER_KEY, JSON.stringify(profile));
+
+      const profiles = JSON.parse(localStorage.getItem(CUSTOMERS_KEY) || '[]');
+      profiles.unshift(profile);
+      if (profiles.length > 200) profiles.splice(200);
+      localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(profiles));
+
+      const leads = JSON.parse(localStorage.getItem(LEADS_KEY) || '[]');
+      leads.unshift({
+        id: profile.id,
+        ts: profile.ts,
+        source: 'client_login',
+        status: 'new',
+        name: profile.name,
+        email: profile.email,
+        phone: profile.phone,
+        project: profile.interest || profile.stage || 'Client access',
+        message: 'Client access profile. Stage: ' + (profile.stage || 'Not shared') + '. Interest: ' + (profile.interest || 'Not shared') + '.',
+      });
+      if (leads.length > 500) leads.splice(500);
+      localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
+    } catch (_) {}
+  }
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (errorEl) errorEl.textContent = '';
+
+    const data = Object.fromEntries(new FormData(form));
+    const profile = {
+      id: Date.now(),
+      ts: new Date().toISOString(),
+      source: 'client_access',
+      name: String(data.name || '').trim(),
+      phone: String(data.phone || '').trim(),
+      email: String(data.email || '').trim(),
+      stage: data.stage || '',
+      interest: data.interest || '',
+    };
+
+    if (!profile.name) {
+      if (errorEl) errorEl.textContent = 'Please enter your name to continue.';
+      return;
+    }
+    if (!profile.phone && !profile.email) {
+      if (errorEl) errorEl.textContent = 'Please share either an email or phone number for follow-up.';
+      return;
+    }
+
+    saveProfile(profile);
+    showPortal(profile);
+  });
+
+  chatBtn && chatBtn.addEventListener('click', function() {
+    const bubble = document.getElementById('chatBubble');
+    const win = document.getElementById('chatbotWindow');
+    if (bubble && (!win || !win.classList.contains('open'))) bubble.click();
+  });
+
+  contactBtn && contactBtn.addEventListener('click', function() {
+    const contact = document.getElementById('contact');
+    if (!contact) {
+      window.location.href = 'index.html#contact';
+      return;
+    }
+    if (typeof lenis !== 'undefined' && lenis) lenis.scrollTo(contact, { duration: 1.2 });
+    else contact.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  logoutBtn && logoutBtn.addEventListener('click', function() {
+    try { localStorage.removeItem(CUSTOMER_KEY); } catch (_) {}
+    form.reset();
+    showLogin();
+  });
+
+  const saved = getSavedProfile();
+  if (saved && saved.name) showPortal(saved);
+  else showLogin();
 })();
 
 /* ══════════════════════════════════════════════════════════
@@ -651,7 +780,9 @@ if (typeof Lenis === 'undefined') {
    CHATBOT — lead capture conversation
    ══════════════════════════════════════════════════════════ */
 (function initChatbot() {
+  const root     = document.getElementById('chatbot');
   const bubble   = document.getElementById('chatBubble');
+  const labelBtn = document.getElementById('chatLaunchLabel');
   const win      = document.getElementById('chatbotWindow');
   const closeBtn = document.getElementById('chatbotClose');
   const msgs     = document.getElementById('chatbotMessages');
@@ -667,6 +798,7 @@ if (typeof Lenis === 'undefined') {
 
   function openChat() {
     isOpen = true;
+    root && root.classList.add('chat-open');
     win.classList.add('open');
     win.setAttribute('aria-hidden', 'false');
     if (!started) { started = true; setTimeout(startFlow, 500); }
@@ -674,11 +806,13 @@ if (typeof Lenis === 'undefined') {
 
   function closeChat() {
     isOpen = false;
+    root && root.classList.remove('chat-open');
     win.classList.remove('open');
     win.setAttribute('aria-hidden', 'true');
   }
 
   bubble.addEventListener('click', () => { isOpen ? closeChat() : openChat(); });
+  labelBtn && labelBtn.addEventListener('click', () => { isOpen ? closeChat() : openChat(); });
   closeBtn.addEventListener('click', closeChat);
 
   function scrollBottom() { msgs.scrollTop = msgs.scrollHeight; }
@@ -743,7 +877,8 @@ if (typeof Lenis === 'undefined') {
   async function startFlow() {
     setInput(false);
     await botSay('Namaste! I\'m the studio assistant for <strong>Ar.Shrishtika</strong>.', 200);
-    await botSay('We\'d love to connect with you. May I know your <strong>name</strong>?', 400);
+    await botSay('I can help you share a project brief quickly, choose the right service, and request a studio follow-up.', 350);
+    await botSay('May I know your <strong>name</strong>?', 400);
     step = 1;
     setInput(true, 'Your name…');
   }
@@ -863,6 +998,67 @@ if (typeof Lenis === 'undefined') {
   document.querySelectorAll('.project-card').forEach((card, i) => {
     card.style.setProperty('--i', i);
   });
+})();
+
+/* ══════════════════════════════════════════════════════════
+   ABOUT — PHOTO OVERLAY LIGHTBOX
+   ══════════════════════════════════════════════════════════ */
+(function initPhotoOverlay() {
+  const overlay    = document.getElementById('photoOverlay');
+  const overlayImg = document.getElementById('photoOverlayImg');
+  const overlayCap = document.getElementById('photoOverlayCaption');
+  const closeBtn   = document.getElementById('photoOverlayClose');
+  if (!overlay) return;
+
+  function openOverlay(src, caption) {
+    overlayImg.src = src;
+    overlayImg.alt = caption || '';
+    overlayCap.textContent = caption || '';
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    if (lenis) lenis.stop();
+  }
+
+  function closeOverlay() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    if (lenis) lenis.start();
+  }
+
+  document.querySelectorAll('.about-img-clickable').forEach(function(wrap) {
+    wrap.addEventListener('click', function() {
+      openOverlay(wrap.dataset.src, wrap.dataset.caption);
+    });
+  });
+
+  closeBtn && closeBtn.addEventListener('click', closeOverlay);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeOverlay(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeOverlay(); });
+})();
+
+/* ══════════════════════════════════════════════════════════
+   COOKIE CONSENT BANNER
+   ══════════════════════════════════════════════════════════ */
+(function initCookieConsent() {
+  var COOKIE_KEY = 'ars_cookie_consent';
+  var banner     = document.getElementById('cookieBanner');
+  var acceptBtn  = document.getElementById('cookieAccept');
+  var declineBtn = document.getElementById('cookieDecline');
+  if (!banner) return;
+
+  if (!localStorage.getItem(COOKIE_KEY)) {
+    setTimeout(function() { banner.classList.add('visible'); }, 1800);
+  }
+
+  function dismiss(value) {
+    localStorage.setItem(COOKIE_KEY, value);
+    banner.classList.remove('visible');
+  }
+
+  acceptBtn  && acceptBtn.addEventListener('click',  function() { dismiss('accepted'); });
+  declineBtn && declineBtn.addEventListener('click', function() { dismiss('declined'); });
 })();
 
 /* ══════════════════════════════════════════════════════════

@@ -266,6 +266,17 @@ function shortenUA(ua) {
 function statusBadge(s) {
   return '<span class="status-badge ' + esc(s || 'new') + '">' + esc(s || 'new') + '</span>';
 }
+function sourceLabel(s) {
+  var labels = {
+    website_form: 'Website Form',
+    client_login: 'Client Login',
+    chatbot: 'Chatbot',
+    whatsapp: 'WhatsApp',
+    phone: 'Phone',
+    email: 'Email',
+  };
+  return labels[s] || s || 'Form';
+}
 function countBy(arr, key) {
   var map = {};
   arr.forEach(function(item) {
@@ -643,15 +654,16 @@ function renderOverview() {
       + '<td>' + esc(l.name) + '</td>'
       + '<td>' + esc(l.email) + '</td>'
       + '<td>' + esc(l.project) + '</td>'
-      + '<td>' + esc(l.source || 'form') + '</td>'
+      + '<td>' + esc(sourceLabel(l.source)) + '</td>'
       + '<td>' + fmtDate(l.ts) + '</td>'
       + '<td>' + statusBadge(l.status) + '</td>'
       + '</tr>';
   }).join('');
 
-  renderBars('sourceBars',  countBy(leads, 'source'),  ['website_form','email','whatsapp','phone']);
+  renderBars('sourceBars',  countBy(leads, 'source'),  ['website_form','client_login','chatbot','email','whatsapp','phone']);
   renderBars('serviceBars', countBy(leads, 'project'), null);
   renderWeeklyChart(leads);
+  renderRemindersWidget();
 }
 
 function renderWeeklyChart(leads) {
@@ -702,7 +714,7 @@ function renderBars(containerId, countMap, order) {
     var n   = countMap[k] || 0;
     var pct = Math.round((n / total) * 100);
     return '<div class="src-row">'
-      + '<div class="src-label"><span>' + esc(k) + '</span><span>' + n + '</span></div>'
+      + '<div class="src-label"><span>' + esc(sourceLabel(k)) + '</span><span>' + n + '</span></div>'
       + '<div class="src-bar-wrap"><div class="src-bar ' + BAR_COLORS[i % BAR_COLORS.length] + '" style="width:' + pct + '%"></div></div>'
       + '</div>';
   }).join('');
@@ -738,7 +750,7 @@ function renderLeadsPanel(filter) {
       + '<td><a href="tel:' + esc(l.phone) + '" style="color:var(--muted)">' + esc(l.phone) + '</a></td>'
       + '<td>' + esc(l.project) + '</td>'
       + '<td class="tbl-msg" title="' + esc(l.message) + '">' + esc(msgShort) + '</td>'
-      + '<td>' + esc(l.source || 'form') + '</td>'
+      + '<td>' + esc(sourceLabel(l.source)) + '</td>'
       + '<td>' + fmtDate(l.ts) + '</td>'
       + '<td>' + statusBadge(l.status) + '</td>'
       + '<td><div class="tbl-actions">'
@@ -800,7 +812,7 @@ function openLeadModal(id) {
     + '<p class="modal-label">Phone / WhatsApp</p><p class="modal-val">'
       + (lead.phone ? '<a href="tel:' + esc(lead.phone) + '" style="color:var(--muted)">' + esc(lead.phone) + '</a>' : '—') + '</p>'
     + '<p class="modal-label">Service Requested</p><p class="modal-val">' + esc(lead.project || '—') + '</p>'
-    + '<p class="modal-label">Source</p><p class="modal-val">' + esc(lead.source || 'website_form') + '</p>'
+    + '<p class="modal-label">Source</p><p class="modal-val">' + esc(sourceLabel(lead.source)) + '</p>'
     + '<p class="modal-label">Submitted</p><p class="modal-val">' + fmtDate(lead.ts) + '</p>'
     + '<p class="modal-label">Message</p><div class="modal-msg">' + esc(lead.message || '—') + '</div>'
     + '<div class="modal-actions">'
@@ -1050,9 +1062,10 @@ renderMarketing = function() {
 var _origOpenLeadModal = openLeadModal;
 openLeadModal = function(id) {
   _origOpenLeadModal(id);
-  /* Append notes section to modal */
   var modalBody = $('modalBody');
   if (!modalBody) return;
+
+  /* ── Notes section ── */
   var noteKey = 'ars_note_' + id;
   var savedNote = '';
   try { savedNote = localStorage.getItem(noteKey) || ''; } catch(e) {}
@@ -1060,7 +1073,7 @@ openLeadModal = function(id) {
   var noteWrap = document.createElement('div');
   noteWrap.className = 'modal-notes';
   noteWrap.innerHTML = '<p class="modal-label" style="margin-top:1.5rem">Private Notes</p>'
-    + '<textarea class="notes-ta" id="leadNoteTA" rows="4" placeholder="Add internal notes about this lead…">' + esc(savedNote) + '</textarea>'
+    + '<textarea class="notes-ta" id="leadNoteTA" rows="3" placeholder="Add internal notes about this lead…">' + esc(savedNote) + '</textarea>'
     + '<button class="action-btn outline" id="saveNoteBtn" style="margin-top:.6rem;font-size:.78rem">Save Note</button>'
     + '<span class="note-saved-msg" id="noteSavedMsg" style="font-size:.75rem;color:var(--green);margin-left:.75rem;opacity:0;transition:opacity .3s"></span>';
   modalBody.appendChild(noteWrap);
@@ -1074,7 +1087,92 @@ openLeadModal = function(id) {
       if (msg) { msg.textContent = '✓ Saved'; msg.style.opacity = '1'; setTimeout(function() { msg.style.opacity = '0'; }, 2000); }
     });
   }
+
+  /* ── Follow-up Reminder section ── */
+  var leads = JSON.parse(localStorage.getItem('ars_leads') || '[]');
+  var lead  = leads.find(function(l) { return l.id == id; }) || {};
+  var reminders = [];
+  try { reminders = JSON.parse(localStorage.getItem('ars_reminders') || '[]'); } catch(e) {}
+  var existing = reminders.find(function(r) { return r.leadId == id; }) || {};
+
+  var reminderWrap = document.createElement('div');
+  reminderWrap.className = 'modal-reminder';
+  reminderWrap.innerHTML = '<p class="modal-label" style="margin-top:1.5rem">Follow-up Reminder</p>'
+    + '<div class="reminder-row">'
+    + '<div class="reminder-field"><label>Callback Date & Time</label>'
+    + '<input type="datetime-local" id="reminderDate" value="' + esc(existing.date || '') + '" /></div>'
+    + '<div class="reminder-field"><label>Reminder Note</label>'
+    + '<input type="text" id="reminderNote" placeholder="e.g. Discuss Vastu plan…" value="' + esc(existing.note || '') + '" /></div>'
+    + '</div>'
+    + '<div style="display:flex;gap:.6rem;margin-top:.75rem;align-items:center">'
+    + '<button class="action-btn outline" id="saveReminderBtn" style="font-size:.78rem">Set Reminder</button>'
+    + (existing.date ? '<button class="action-btn" id="clearReminderBtn" style="font-size:.78rem;background:var(--r-dim);color:var(--red);border-color:var(--red)">Clear</button>' : '')
+    + '<span id="reminderMsg" style="font-size:.75rem;color:var(--green);opacity:0;transition:opacity .3s"></span>'
+    + '</div>';
+  modalBody.appendChild(reminderWrap);
+
+  var saveReminderBtn = $('saveReminderBtn');
+  if (saveReminderBtn) {
+    saveReminderBtn.addEventListener('click', function() {
+      var dateVal = ($('reminderDate') || {}).value || '';
+      var noteVal = ($('reminderNote') || {}).value || '';
+      if (!dateVal) { showToast('Please pick a date & time', 'error'); return; }
+      var updated = reminders.filter(function(r) { return r.leadId != id; });
+      updated.push({ leadId: id, leadName: lead.name || 'Lead', date: dateVal, note: noteVal });
+      try { localStorage.setItem('ars_reminders', JSON.stringify(updated)); } catch(e) {}
+      var msg = $('reminderMsg');
+      if (msg) { msg.textContent = '✓ Reminder set'; msg.style.opacity = '1'; setTimeout(function() { msg.style.opacity = '0'; }, 2200); }
+      showToast('Follow-up reminder set for ' + (lead.name || 'this lead'), 'success');
+    });
+  }
+
+  var clearReminderBtn = $('clearReminderBtn');
+  if (clearReminderBtn) {
+    clearReminderBtn.addEventListener('click', function() {
+      var updated = reminders.filter(function(r) { return r.leadId != id; });
+      try { localStorage.setItem('ars_reminders', JSON.stringify(updated)); } catch(e) {}
+      showToast('Reminder cleared', 'info');
+      clearReminderBtn.remove();
+      var di = $('reminderDate'); if (di) di.value = '';
+      var ni = $('reminderNote'); if (ni) ni.value = '';
+    });
+  }
 };
+
+/* ── Render reminders widget in overview ── */
+function renderRemindersWidget() {
+  var wrap = $('remindersWidget');
+  if (!wrap) return;
+  var reminders = [];
+  try { reminders = JSON.parse(localStorage.getItem('ars_reminders') || '[]'); } catch(e) {}
+
+  var now = new Date();
+  var upcoming = reminders
+    .filter(function(r) { return r.date; })
+    .sort(function(a, b) { return new Date(a.date) - new Date(b.date) });
+
+  if (!upcoming.length) {
+    wrap.innerHTML = '<p style="font-size:.82rem;color:var(--dim)">No reminders set.</p>';
+    return;
+  }
+
+  wrap.innerHTML = upcoming.map(function(r) {
+    var d     = new Date(r.date);
+    var past  = d < now;
+    var label = past ? 'overdue' : 'upcoming';
+    var color = past ? 'var(--red)' : 'var(--accent)';
+    var dateStr = d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
+                + ' ' + d.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+    return '<div class="reminder-item">'
+      + '<div class="reminder-item-main">'
+      + '<span class="reminder-badge" style="background:' + (past ? 'var(--r-dim)' : 'var(--a-dim)') + ';color:' + color + '">' + label + '</span>'
+      + '<strong>' + esc(r.leadName) + '</strong>'
+      + (r.note ? '<span class="reminder-item-note">' + esc(r.note) + '</span>' : '')
+      + '</div>'
+      + '<span class="reminder-item-date">' + dateStr + '</span>'
+      + '</div>';
+  }).join('');
+}
 
 /* ═══════════════════════════════════════════════════════════
    SETTINGS PANEL

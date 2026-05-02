@@ -759,8 +759,8 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
   padding: .75rem 1.25rem;
   border-radius: 6px;
   font-size: .83rem;
-  font-family: var(--font-sans);
-  background: var(--surface-2);
+  font-family: var(--sans);
+  background: var(--bg-2);
   border: 1px solid var(--border);
   color: var(--text);
   box-shadow: 0 4px 20px rgba(0,0,0,.25);
@@ -789,7 +789,7 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
 }
 .confirm-overlay[hidden] { display: none; }
 .confirm-box {
-  background: var(--surface);
+  background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 2rem;
@@ -812,9 +812,9 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
   padding: .5rem .9rem;
   border: 1px solid var(--border);
   border-radius: 4px;
-  background: var(--surface);
+  background: var(--bg-2);
   color: var(--text);
-  font-family: var(--font-sans);
+  font-family: var(--sans);
   font-size: .82rem;
   min-width: 220px;
   transition: border-color .2s;
@@ -826,7 +826,7 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
    WEEKLY ACTIVITY CHART
    ════════════════════════════════════════════════════════════ */
 .weekly-wrap {
-  background: var(--surface);
+  background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1.5rem;
@@ -876,7 +876,7 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
 .wc-day {
   font-size: .68rem;
   color: var(--muted);
-  font-family: var(--font-sans);
+  font-family: var(--sans);
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -887,7 +887,7 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
   font-size: .68rem;
   color: var(--muted);
   margin-top: .2rem;
-  font-family: var(--font-sans);
+  font-family: var(--sans);
 }
 .stat-trend.up   { color: var(--green); }
 .stat-trend.down { color: #e07050; }
@@ -906,11 +906,11 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
 .modal-notes { margin-top: .5rem; }
 .notes-ta {
   width: 100%;
-  background: var(--surface);
+  background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: 4px;
   color: var(--text);
-  font-family: var(--font-sans);
+  font-family: var(--sans);
   font-size: .84rem;
   padding: .75rem;
   resize: vertical;
@@ -928,7 +928,7 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
   gap: 1.5rem;
 }
 .settings-card {
-  background: var(--surface);
+  background: var(--bg-2);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 1.75rem;
@@ -962,7 +962,7 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
   border: 1px solid var(--border);
   border-radius: 4px;
   color: var(--text);
-  font-family: var(--font-sans);
+  font-family: var(--sans);
   font-size: .88rem;
   padding: .6rem .85rem;
   transition: border-color .2s;
@@ -1010,4 +1010,158 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
 @media (max-width: 900px) {
   .settings-grid { grid-template-columns: 1fr; }
   .danger-item { flex-direction: column; align-items: flex-start; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   FOLLOW-UP REMINDERS
+   ════════════════════════════════════════════════════════════ */
+.reminders-wrap {
+  margin-top: 2rem;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.5rem;
+}
+.reminders-wrap .source-title {
+  display: flex; align-items: center; gap: .5rem;
+  margin-bottom: 1rem;
+}
+.reminder-item {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+  padding: .75rem 0;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.reminder-item:last-child { border-bottom: none; }
+.reminder-item-main { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.reminder-item-main strong { font-size: .85rem; }
+.reminder-badge {
+  font-size: .65rem; letter-spacing: .1em; text-transform: uppercase;
+  padding: .2rem .55rem; border-radius: 2rem; font-weight: 500;
+}
+.reminder-item-note { font-size: .78rem; color: var(--muted); }
+.reminder-item-date { font-size: .75rem; color: var(--dim); white-space: nowrap; flex-shrink: 0; }
+
+.modal-reminder { margin-top: .25rem; }
+.reminder-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: .75rem;
+  margin-top: .5rem;
+}
+.reminder-field { display: flex; flex-direction: column; gap: .3rem; }
+.reminder-field label { font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.reminder-field input {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: .5rem .7rem;
+  font-size: .82rem; color: var(--fg);
+  outline: none;
+  transition: border-color .2s;
+  font-family: var(--sans);
+  color-scheme: dark;
+}
+.reminder-field input:focus { border-color: var(--accent); }
+
+@media (max-width: 560px) {
+  .reminder-row { grid-template-columns: 1fr; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   ADMIN MOBILE — COMPREHENSIVE FIX
+   ════════════════════════════════════════════════════════════ */
+
+/* Prevent horizontal overflow */
+html, body { overflow-x: hidden; max-width: 100%; }
+
+@media (max-width: 768px) {
+  /* ── Topbar ── */
+  .dash-topbar { padding: 0 1rem; gap: .5rem; height: 54px; }
+  .dash-username { display: none; }
+  .dash-avatar  { width: 2rem; height: 2rem; font-size: .75rem; }
+
+  /* ── Panel padding ── */
+  .panel { padding: 1.25rem 1rem; }
+  .panel-title { font-size: 1.3rem; }
+
+  /* ── Panel header — stack on mobile ── */
+  .panel-header { flex-direction: column; align-items: flex-start; gap: .75rem; }
+  .leads-actions { width: 100%; flex-wrap: wrap; gap: .5rem; }
+  .search-input  { flex: 1; min-width: 0; }
+
+  /* ── Stat grid — 2 columns ── */
+  .stat-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
+  .stat-card { padding: 1rem; }
+  .stat-num  { font-size: 1.6rem; }
+
+  /* ── Leads table — horizontal scroll ── */
+  .leads-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .leads-table { min-width: 640px; font-size: .78rem; }
+  .leads-table th,
+  .leads-table td { padding: .7rem .75rem; }
+  .tbl-msg { max-width: 120px; }
+
+  /* ── Modal — full width ── */
+  .modal {
+    width: calc(100vw - 2rem);
+    max-height: 88vh;
+    overflow-y: auto;
+    margin: 0 1rem;
+  }
+  .modal-body { padding: 1.25rem; }
+
+  /* ── Marketing grid ── */
+  .mkt-grid    { grid-template-columns: 1fr; }
+  .source-grid { grid-template-columns: 1fr; }
+  .ads-grid    { grid-template-columns: 1fr; }
+  .ads-row     { grid-template-columns: 1fr; }
+
+  /* ── Weekly chart ── */
+  .weekly-chart { overflow-x: auto; min-height: 80px; }
+
+  /* ── Toast — full width bottom ── */
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    top: auto;
+    bottom: 4.5rem;
+    align-items: stretch;
+  }
+  .toast { max-width: 100%; }
+
+  /* ── Confirm modal ── */
+  .confirm-box { width: calc(100vw - 2rem); padding: 1.5rem; }
+
+  /* ── Settings ── */
+  .settings-grid  { grid-template-columns: 1fr; }
+  .settings-card  { padding: 1.25rem; }
+  .hash-display   { flex-direction: column; gap: .5rem; }
+  .hash-val       { word-break: break-all; font-size: .7rem; }
+}
+
+@media (max-width: 480px) {
+  /* ── Stat grid — single column ── */
+  .stat-grid { grid-template-columns: 1fr; }
+
+  /* ── Login card ── */
+  .login-card { padding: 2rem 1.25rem; margin: 1rem; }
+  .login-brand { font-size: 1.5rem; }
+
+  /* ── Sidebar width on very small screens ── */
+  :root { --sb-w: 220px; }
+  .sb-logo { font-size: 1.2rem; padding: 1.25rem 1.25rem .75rem; }
+  .sb-link { padding: .75rem 1.25rem; font-size: .8rem; }
+
+  /* ── Table actions — tighter ── */
+  .tbl-actions { gap: .25rem; }
+  .tbl-btn { padding: .3rem .5rem; font-size: .72rem; }
+
+  /* ── Campaign cards ── */
+  .camp-card { padding: 1rem; }
+
+  /* ── Inputs — prevent iOS zoom ── */
+  input, select, textarea { font-size: 16px; }
+
+  /* ── Broadcast form ── */
+  .broadcast-form { gap: .75rem; }
 }
