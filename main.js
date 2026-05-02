@@ -77,7 +77,7 @@ const PROJECTS = [
     status: 'In Progress',
     images: [
       'assets/projects/residence-05.jpeg',
-      'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&q=80',
+      'assets/projects/residence-02.jpeg',
       'assets/projects/residence-02.jpeg',
     ],
     desc: 'A participatory masterplan for a 6.4-hectare stretch of Varanasi\'s ghats, developed with residents, priests, and the Varanasi Municipal Corporation. The proposal enhances the ritual life of the river while improving flood resilience, pedestrian access, and sanitation. Four phases over twelve years — preserving the layered temporal character of the ghats while making them safer for the millions who use them each year.',
@@ -777,31 +777,48 @@ if (typeof Lenis === 'undefined') {
 }
 
 /* ══════════════════════════════════════════════════════════
-   CHATBOT — lead capture conversation
+   CHATBOT — friendly lead capture + quick actions
    ══════════════════════════════════════════════════════════ */
 (function initChatbot() {
-  const root     = document.getElementById('chatbot');
-  const bubble   = document.getElementById('chatBubble');
-  const labelBtn = document.getElementById('chatLaunchLabel');
-  const win      = document.getElementById('chatbotWindow');
-  const closeBtn = document.getElementById('chatbotClose');
-  const msgs     = document.getElementById('chatbotMessages');
-  const inputWrap= document.getElementById('chatInputWrap');
-  const input    = document.getElementById('chatInput');
-  const sendBtn  = document.getElementById('chatSend');
-  if (!bubble || !win) return;
+  const root      = document.getElementById('chatbot');
+  const bubble    = document.getElementById('chatBubble');
+  const labelBtn  = document.getElementById('chatLaunchLabel');
+  const win       = document.getElementById('chatbotWindow');
+  const closeBtn  = document.getElementById('chatbotClose');
+  const msgs      = document.getElementById('chatbotMessages');
+  const inputWrap = document.getElementById('chatInputWrap');
+  const input     = document.getElementById('chatInput');
+  const sendBtn   = document.getElementById('chatSend');
+  if (!bubble || !win || !msgs || !inputWrap || !input || !sendBtn) return;
 
   let isOpen  = false;
-  let step    = 0;
   let started = false;
-  const lead  = { name: '', phone: '', service: '', project: '' };
+  let step    = 'idle';
+  let activeOptions = null;
+  let lead    = freshLead();
+
+  function freshLead() {
+    return { intent: '', name: '', phone: '', email: '', service: '', project: '' };
+  }
+
+  function escText(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   function openChat() {
     isOpen = true;
     root && root.classList.add('chat-open');
     win.classList.add('open');
     win.setAttribute('aria-hidden', 'false');
-    if (!started) { started = true; setTimeout(startFlow, 500); }
+    if (!started) {
+      started = true;
+      setTimeout(startFlow, 250);
+    }
   }
 
   function closeChat() {
@@ -811,11 +828,16 @@ if (typeof Lenis === 'undefined') {
     win.setAttribute('aria-hidden', 'true');
   }
 
-  bubble.addEventListener('click', () => { isOpen ? closeChat() : openChat(); });
-  labelBtn && labelBtn.addEventListener('click', () => { isOpen ? closeChat() : openChat(); });
-  closeBtn.addEventListener('click', closeChat);
+  bubble.addEventListener('click', function() { isOpen ? closeChat() : openChat(); });
+  labelBtn && labelBtn.addEventListener('click', function() { isOpen ? closeChat() : openChat(); });
+  closeBtn && closeBtn.addEventListener('click', closeChat);
 
   function scrollBottom() { msgs.scrollTop = msgs.scrollHeight; }
+
+  function clearOptions() {
+    if (activeOptions && activeOptions.parentNode) activeOptions.parentNode.removeChild(activeOptions);
+    activeOptions = null;
+  }
 
   function addMsg(html, type) {
     const d = document.createElement('div');
@@ -823,6 +845,10 @@ if (typeof Lenis === 'undefined') {
     d.innerHTML = '<div class="chat-msg-bubble">' + html + '</div>';
     msgs.appendChild(d);
     scrollBottom();
+  }
+
+  function addUserText(text) {
+    addMsg(escText(text), 'user');
   }
 
   function showTyping() {
@@ -842,7 +868,7 @@ if (typeof Lenis === 'undefined') {
           typing.remove();
           addMsg(html, 'bot');
           resolve();
-        }, 850);
+        }, 520);
       }, extraDelay || 0);
     });
   }
@@ -850,106 +876,217 @@ if (typeof Lenis === 'undefined') {
   function setInput(active, placeholder) {
     inputWrap.style.display = active ? 'flex' : 'none';
     if (active) {
-      input.placeholder = placeholder || 'Type your answer…';
+      input.placeholder = placeholder || 'Type here...';
       input.value = '';
-      input.focus();
+      setTimeout(function() { input.focus(); }, 60);
     }
   }
 
   function showOptions(opts, onPick) {
+    clearOptions();
     const wrap = document.createElement('div');
     wrap.className = 'chat-options';
     opts.forEach(function(opt) {
+      const label = typeof opt === 'string' ? opt : opt.label;
+      const value = typeof opt === 'string' ? opt : opt.value;
+      const tone  = typeof opt === 'string' ? ''  : (opt.tone || '');
       const btn = document.createElement('button');
-      btn.className = 'chat-option-btn';
-      btn.textContent = opt;
+      btn.type = 'button';
+      btn.className = 'chat-option-btn' + (tone ? ' chat-option-btn--' + tone : '');
+      btn.textContent = label;
       btn.addEventListener('click', function() {
-        wrap.remove();
-        addMsg(opt, 'user');
-        onPick(opt);
+        clearOptions();
+        addUserText(label);
+        onPick(value, label);
       });
       wrap.appendChild(btn);
     });
     msgs.appendChild(wrap);
+    activeOptions = wrap;
+    scrollBottom();
+  }
+
+  function showActionButtons() {
+    clearOptions();
+    const actions = document.createElement('div');
+    actions.className = 'chat-done-actions';
+
+    const whatsapp = document.createElement('a');
+    whatsapp.className = 'chat-done-btn chat-done-btn--primary';
+    whatsapp.href = 'https://wa.me/919452861841?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20your%20architecture%20services.';
+    whatsapp.target = '_blank';
+    whatsapp.rel = 'noopener';
+    whatsapp.textContent = 'Open WhatsApp';
+
+    const contact = document.createElement('button');
+    contact.type = 'button';
+    contact.className = 'chat-done-btn';
+    contact.textContent = 'Contact Form';
+    contact.addEventListener('click', function() {
+      closeChat();
+      const cf = document.getElementById('contact');
+      if (cf) {
+        if (typeof lenis !== 'undefined' && lenis) lenis.scrollTo(cf, { duration: 1.2 });
+        else cf.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.location.href = 'index.html#contact';
+      }
+    });
+
+    const restart = document.createElement('button');
+    restart.type = 'button';
+    restart.className = 'chat-done-btn chat-done-btn--ghost';
+    restart.textContent = 'Start Over';
+    restart.addEventListener('click', resetFlow);
+
+    actions.appendChild(whatsapp);
+    actions.appendChild(contact);
+    actions.appendChild(restart);
+    msgs.appendChild(actions);
     scrollBottom();
   }
 
   async function startFlow() {
+    step = 'menu';
     setInput(false);
-    await botSay('Namaste! I\'m the studio assistant for <strong>Ar.Shrishtika</strong>.', 200);
-    await botSay('I can help you share a project brief quickly, choose the right service, and request a studio follow-up.', 350);
-    await botSay('May I know your <strong>name</strong>?', 400);
-    step = 1;
-    setInput(true, 'Your name…');
+    await botSay('Hi, I am the <strong>Studio Assistant</strong>. What would you like to do?', 120);
+    showMainMenu();
   }
 
-  async function askPhone() {
+  function showMainMenu() {
+    step = 'menu';
     setInput(false);
-    await botSay('Lovely to meet you, <strong>' + lead.name + '</strong>!', 200);
-    await botSay('What\'s your <strong>WhatsApp / mobile number</strong>? Ar. Shrishtika will personally reach out.', 500);
-    step = 2;
-    setInput(true, '+91 XXXXX XXXXX');
+    showOptions([
+      { label: 'Share project brief', value: 'brief', tone: 'primary' },
+      { label: 'Book a consultation', value: 'consultation' },
+      { label: 'See services', value: 'services' },
+      { label: 'WhatsApp directly', value: 'whatsapp' },
+    ], handleIntent);
+  }
+
+  async function handleIntent(intent) {
+    lead.intent = intent;
+    if (intent === 'services') {
+      await botSay('We can help with <strong>Architectural Design</strong>, <strong>Interior Design</strong>, <strong>Vastu Consultation</strong>, sustainable planning, and turnkey execution.', 160);
+      await botSay('Would you like to share a quick brief so the studio can guide you better?', 160);
+      showOptions([
+        { label: 'Yes, share brief', value: 'brief', tone: 'primary' },
+        { label: 'Back to menu', value: 'menu' },
+      ], function(value) {
+        if (value === 'brief') askService();
+        else showMainMenu();
+      });
+      return;
+    }
+
+    if (intent === 'whatsapp') {
+      await botSay('Sure. You can message the studio directly on WhatsApp, or leave a short brief here first.', 160);
+      showActionButtons();
+      return;
+    }
+
+    if (intent === 'consultation') {
+      lead.service = 'Consultation';
+      await botSay('Good choice. I will collect a few details so the team can prepare before calling you.', 160);
+      askName();
+      return;
+    }
+
+    askService();
   }
 
   async function askService() {
+    step = 'service';
     setInput(false);
-    await botSay('What are you <strong>looking for</strong>?', 400);
-    step = 3;
-    showOptions(
-      ['Residential Design', 'Commercial / Office', 'Interior Architecture',
-       'Vastu Consultation', 'Urban / Landscape', 'Other'],
-      function(val) {
-        lead.service = val;
-        setTimeout(askProject, 300);
-      }
-    );
+    await botSay('Which service fits your requirement best?', 140);
+    showOptions([
+      { label: 'Residential Design', value: 'Residential Design', tone: 'primary' },
+      { label: 'Interior Design', value: 'Interior Design' },
+      { label: 'Vastu Consultation', value: 'Vastu Consultation' },
+      { label: 'Turnkey Execution', value: 'Turnkey Execution' },
+      { label: 'Commercial / Office', value: 'Commercial / Office' },
+      { label: 'Not sure yet', value: 'Not sure yet' },
+    ], function(value) {
+      lead.service = value;
+      askProject();
+    });
   }
 
   async function askProject() {
-    await botSay('Tell us <strong>briefly about your project</strong> — location, size, or anything that helps.', 300);
-    step = 4;
-    setInput(true, 'e.g. 3BHK flat in Pune, 1500 sqft…');
+    step = 'project';
+    setInput(false);
+    await botSay('Tell me a little about the project. Location, plot/flat size, timeline, or style references are enough.', 140);
+    setInput(true, 'e.g. 3BHK in Pune, 1500 sqft...');
+  }
+
+  async function askName() {
+    step = 'name';
+    setInput(false);
+    await botSay('Who should the studio contact?', 120);
+    setInput(true, 'Your name');
+  }
+
+  async function askContact() {
+    step = 'contact';
+    setInput(false);
+    const name = lead.name ? ', <strong>' + escText(lead.name.split(/\s+/)[0]) + '</strong>' : '';
+    await botSay('Thanks' + name + '. What is the best WhatsApp number or email for follow-up?', 120);
+    setInput(true, '+91 number or email');
+  }
+
+  async function confirmLead() {
+    step = 'confirm';
+    setInput(false);
+    await botSay(
+      '<strong>Quick check:</strong><br>' +
+      'Service: ' + escText(lead.service || 'Not sure yet') + '<br>' +
+      'Brief: ' + escText(lead.project || 'Not shared') + '<br>' +
+      'Contact: ' + escText(lead.phone || lead.email || 'Not shared'),
+      120
+    );
+    showOptions([
+      { label: 'Submit enquiry', value: 'submit', tone: 'primary' },
+      { label: 'Edit brief', value: 'edit' },
+      { label: 'Start over', value: 'restart' },
+    ], function(value) {
+      if (value === 'submit') finish();
+      else if (value === 'edit') askProject();
+      else resetFlow();
+    });
   }
 
   async function finish() {
+    step = 'done';
     setInput(false);
     saveLead();
-    await botSay('Thank you! Your details are with us. <strong>Ar. Shrishtika</strong> or her team will reach out on WhatsApp shortly. 🏛️', 300);
-    setTimeout(function() {
-      const actions = document.createElement('div');
-      actions.className = 'chat-done-actions';
-      const cta = document.createElement('button');
-      cta.className = 'chat-done-btn';
-      cta.textContent = 'Visit Contact Form ↗';
-      cta.addEventListener('click', function() {
-        closeChat();
-        const cf = document.getElementById('contact');
-        if (cf) {
-          if (typeof lenis !== 'undefined' && lenis) lenis.scrollTo(cf, { duration: 1.2 });
-          else cf.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
-      actions.appendChild(cta);
-      msgs.appendChild(actions);
-      scrollBottom();
-    }, 1800);
-    step = 5;
+    await botSay('Done. Your enquiry has been saved for the studio team. You can also continue on WhatsApp for a faster response.', 160);
+    showActionButtons();
+  }
+
+  function resetFlow() {
+    clearOptions();
+    msgs.innerHTML = '';
+    lead = freshLead();
+    started = true;
+    startFlow();
   }
 
   function saveLead() {
     try {
+      const contact = lead.phone || lead.email || '';
       const leads = JSON.parse(localStorage.getItem('ars_leads') || '[]');
       leads.unshift({
         id: Date.now(),
         ts: new Date().toISOString(),
         source: 'chatbot',
         status: 'new',
-        name: lead.name,
-        email: '',
-        phone: lead.phone,
-        project: lead.service,
-        message: lead.project,
+        name: lead.name || 'Website visitor',
+        email: contact.indexOf('@') > -1 ? contact : '',
+        phone: contact.indexOf('@') > -1 ? '' : contact,
+        project: lead.service || lead.intent || 'Website enquiry',
+        message: lead.project || 'No brief shared.',
       });
+      if (leads.length > 500) leads.splice(500);
       localStorage.setItem('ars_leads', JSON.stringify(leads));
     } catch (_) {}
   }
@@ -957,26 +1094,37 @@ if (typeof Lenis === 'undefined') {
   function handleSend() {
     const val = input.value.trim();
     if (!val) return;
-    if (step === 1) {
-      addMsg(val, 'user');
-      lead.name = val;
-      setInput(false);
-      setTimeout(askPhone, 300);
-    } else if (step === 2) {
-      addMsg(val, 'user');
-      lead.phone = val;
-      setInput(false);
-      setTimeout(askService, 300);
-    } else if (step === 4) {
-      addMsg(val, 'user');
+    clearOptions();
+    addUserText(val);
+
+    if (step === 'project') {
       lead.project = val;
       setInput(false);
-      setTimeout(finish, 300);
+      setTimeout(askName, 220);
+    } else if (step === 'name') {
+      lead.name = val;
+      setInput(false);
+      setTimeout(askContact, 220);
+    } else if (step === 'contact') {
+      if (val.length < 5) {
+        botSay('That looks a little short. Please share a WhatsApp number or email so the team can reach you.', 80);
+        input.value = '';
+        return;
+      }
+      if (val.indexOf('@') > -1) lead.email = val;
+      else lead.phone = val;
+      setInput(false);
+      setTimeout(confirmLead, 220);
     }
   }
 
   sendBtn.addEventListener('click', handleSend);
-  input.addEventListener('keydown', function(e) { if (e.key === 'Enter') handleSend(); });
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSend();
+    }
+  });
 })();
 
 /* ══════════════════════════════════════════════════════════

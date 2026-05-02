@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Project — Ar.Shrishtika</title>
+  <title>Project — EcolineArchitect</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -209,12 +209,11 @@
 
   <!-- NAV -->
   <nav class="nav" id="nav">
-    <a class="nav-logo" href="index.html">Ar.<em>Shrishtika</em></a>
+    <a class="nav-logo" href="index.html">Ecoline<em>Architect</em></a>
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html#about"       class="nav-link">About</a></li>
       <li><a href="index.html#projects"    class="nav-link">Work</a></li>
       <li><a href="index.html#services"    class="nav-link">Services</a></li>
-      <li><a href="index.html#testimonials" class="nav-link">Clients</a></li>
       <li><a href="client-login.html" class="nav-link">Client Login</a></li>
       <li><a href="index.html#contact"     class="nav-link nav-cta">Contact</a></li>
     </ul>
@@ -284,7 +283,7 @@
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
-          <a class="footer-logo" href="index.html"><em>Ar.</em>Shrishtika</a>
+          <a class="footer-logo" href="index.html">Ecoline<em>Architect</em></a>
           <p class="footer-tagline">Architecture & Design Studio<br />Mumbai · Jaipur · Bengaluru · India</p>
         </div>
         <nav class="footer-nav">
@@ -305,7 +304,7 @@
         </nav>
       </div>
       <div class="footer-bottom">
-        <p>© 2026 Ar.Shrishtika Architecture & Design Studio. All rights reserved.</p>
+        <p>© 2026 EcolineArchitect. All rights reserved.</p>
         <p>Designed with intent.</p>
       </div>
     </div>
@@ -399,7 +398,7 @@
       year: '2021', area: '6.4 ha masterplan', status: 'In Progress',
       images: [
         'assets/projects/residence-05.jpeg',
-        'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=800&q=80',
+        'assets/projects/residence-02.jpeg',
         'assets/projects/residence-02.jpeg',
       ],
       desc: 'A participatory masterplan for a 6.4-hectare stretch of Varanasi\'s ghats, developed in close collaboration with residents, priests, and the Varanasi Municipal Corporation. The proposal enhances the ritual life of the river while improving flood resilience, pedestrian access, and sanitation infrastructure. The plan preserves the layered temporal character of the ghats while making them safer and more dignified for the millions of pilgrims who use them each year. Four phases over twelve years.',
@@ -423,7 +422,7 @@
     if (isNaN(idx) || idx < 0 || idx >= PROJECTS.length) idx = 0;
     var p = PROJECTS[idx];
 
-    document.title = p.name + ' — Ar.Shrishtika';
+    document.title = p.name + ' — EcolineArchitect';
 
     var heroEl = document.getElementById('projHero');
     document.getElementById('projHeroImg').src = p.images[0];
