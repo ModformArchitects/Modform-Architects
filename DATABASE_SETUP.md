@@ -8,6 +8,7 @@ The site now supports an optional Supabase database while keeping the existing b
 - Chatbot enquiries go into `leads` with source `chatbot`.
 - Optional client login profiles go into `customer_profiles` and also create a lead with source `client_login`.
 - Visitor history goes into `visitors`.
+- New visitor records include city/state/country when the browser can reach the IP lookup service.
 - The admin dashboard reads database leads/visitors and merges them with local browser data.
 - Admin status changes and single-lead deletes sync back to Supabase when database keys are configured.
 
@@ -16,6 +17,7 @@ The site now supports an optional Supabase database while keeping the existing b
 1. Create a Supabase project.
 2. Open Supabase SQL Editor.
 3. Run the SQL from `SUPABASE_SETUP.sql`.
+   If you already created the tables earlier, run the SQL again so the visitor location columns are added.
 4. Open `database.js`.
 5. Paste your values:
 

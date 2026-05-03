@@ -52,17 +52,40 @@
 
   function insert(table, record) {
     if (!hasConfig() || typeof fetch === 'undefined') return Promise.resolve(null);
+    var body = sanitizeRecord(record);
     return fetch(baseUrl() + table, {
       method: 'POST',
       headers: headers({ Prefer: 'return=representation' }),
-      body: JSON.stringify(sanitizeRecord(record)),
+      body: JSON.stringify(body),
     })
       .then(function(res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();
       })
       .then(function(rows) { return Array.isArray(rows) ? rows[0] : rows; })
-      .catch(function(err) { return failSoft('insert ' + table, err); });
+      .catch(function(err) {
+        if (table === TABLES.visitors && (body.city || body.region || body.country || body.ip)) {
+          var fallback = {
+            id: body.id,
+            ts: body.ts,
+            page: body.page,
+            ref: body.ref,
+            ua: body.ua,
+          };
+          return fetch(baseUrl() + table, {
+            method: 'POST',
+            headers: headers({ Prefer: 'return=representation' }),
+            body: JSON.stringify(sanitizeRecord(fallback)),
+          })
+            .then(function(res) {
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+              return res.json();
+            })
+            .then(function(rows) { return Array.isArray(rows) ? rows[0] : rows; })
+            .catch(function(innerErr) { return failSoft('insert ' + table, innerErr); });
+        }
+        return failSoft('insert ' + table, err);
+      });
   }
 
   function select(table, limit) {

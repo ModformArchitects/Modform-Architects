@@ -99,12 +99,62 @@ window.addEventListener('scroll', () => {
       ref: document.referrer || 'direct',
       ua: navigator.userAgent,
     };
-    const visitors = JSON.parse(localStorage.getItem('ars_visitors') || '[]');
-    visitors.push(visitor);
-    if (visitors.length > 500) visitors.splice(0, visitors.length - 500);
-    localStorage.setItem('ars_visitors', JSON.stringify(visitors));
-    if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.insertVisitor(visitor);
-  } catch (_) {}
+
+    function saveLocal(record) {
+      const visitors = JSON.parse(localStorage.getItem('ars_visitors') || '[]');
+      const idx = visitors.findIndex(v => String(v.id) === String(record.id));
+      if (idx > -1) visitors[idx] = Object.assign({}, visitors[idx], record);
+      else visitors.push(record);
+      if (visitors.length > 500) visitors.splice(0, visitors.length - 500);
+      localStorage.setItem('ars_visitors', JSON.stringify(visitors));
+    }
+
+    function insertRemote(record) {
+      if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.insertVisitor(record);
+    }
+
+    saveLocal(visitor);
+
+    if (typeof fetch !== 'function') {
+      insertRemote(visitor);
+      return;
+    }
+
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeout = controller ? setTimeout(() => controller.abort(), 1800) : null;
+
+    fetch('https://ipapi.co/json/', controller ? { signal: controller.signal } : {})
+      .then(res => res.ok ? res.json() : null)
+      .then(geo => {
+        if (!geo) return visitor;
+        const enriched = Object.assign({}, visitor, {
+          city: geo.city || '',
+          region: geo.region || '',
+          country: geo.country_name || geo.country || '',
+          ip: geo.ip || '',
+        });
+        saveLocal(enriched);
+        return enriched;
+      })
+      .catch(() => visitor)
+      .then(insertRemote)
+      .finally(() => { if (timeout) clearTimeout(timeout); });
+  } catch (_) {
+    try {
+      const visitor = {
+        id: createRecordId(),
+        ts: new Date().toISOString(),
+        page: location.pathname,
+        ref: document.referrer || 'direct',
+        ua: navigator.userAgent,
+      };
+      const visitors = JSON.parse(localStorage.getItem('ars_visitors') || '[]');
+      visitors.push(visitor);
+      if (visitors.length > 500) visitors.splice(0, visitors.length - 500);
+      localStorage.setItem('ars_visitors', JSON.stringify(visitors));
+      if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.insertVisitor(visitor);
+    } catch (__) {}
+  }
 })();
 
 /* ══════════════════════════════════════════════════════════
@@ -909,8 +959,8 @@ if (typeof Lenis === 'undefined') {
   async function askName() {
     step = 'name';
     setInput(false);
-    await botSay('Who should the studio contact?', 120);
-    setInput(true, 'Your name');
+    await botSay('May I have your name so the studio knows who this enquiry is from?', 120);
+    setInput(true, 'Enter your full name');
   }
 
   async function askContact() {
@@ -926,6 +976,7 @@ if (typeof Lenis === 'undefined') {
     setInput(false);
     await botSay(
       '<strong>Quick check:</strong><br>' +
+      'Name: ' + escText(lead.name || 'Not shared') + '<br>' +
       'Service: ' + escText(lead.service || 'Not sure yet') + '<br>' +
       'Brief: ' + escText(lead.project || 'Not shared') + '<br>' +
       'Contact: ' + escText(lead.phone || lead.email || 'Not shared'),
@@ -991,6 +1042,11 @@ if (typeof Lenis === 'undefined') {
       setInput(false);
       setTimeout(askName, 220);
     } else if (step === 'name') {
+      if (val.length < 2 || !/[a-zA-Z]/.test(val)) {
+        botSay('Please share your name so the studio can address the enquiry properly.', 80);
+        input.value = '';
+        return;
+      }
       lead.name = val;
       setInput(false);
       setTimeout(askContact, 220);

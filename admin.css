@@ -1153,11 +1153,61 @@ html, body { overflow-x: hidden; max-width: 100%; }
   .leads-table { min-width: 760px; font-size: .78rem; }
   #allLeadsTable { min-width: 1120px; }
   #recentLeadsTable { min-width: 760px; }
-  #visitorsTable { min-width: 760px; }
+  #visitorsTable { min-width: 0; }
   .leads-table th,
   .leads-table td { padding: .7rem .75rem; }
   .tbl-msg { max-width: 120px; }
   .tbl-actions { min-width: 220px; }
+
+  /* ── Visitors table — mobile cards instead of awkward sideways scroll ── */
+  .visitors-table-wrap {
+    overflow: visible;
+    border: none;
+    max-width: 100%;
+  }
+  .visitors-table-wrap::before { display: none; }
+  .visitors-table,
+  .visitors-table thead,
+  .visitors-table tbody,
+  .visitors-table tr,
+  .visitors-table td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+  .visitors-table { border-collapse: separate; border-spacing: 0; }
+  .visitors-table thead { display: none; }
+  .visitors-table tr {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .85rem;
+    margin-bottom: .8rem;
+    box-shadow: 0 10px 26px rgba(0,0,0,.12);
+  }
+  .visitors-table td {
+    display: grid;
+    grid-template-columns: 108px minmax(0, 1fr);
+    gap: .75rem;
+    padding: .48rem 0;
+    border-bottom: 1px solid var(--border-s);
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.45;
+  }
+  .visitors-table td:last-child { border-bottom: none; }
+  .visitors-table td::before {
+    color: var(--accent);
+    font-size: .62rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+  .visitors-table td:nth-child(1)::before { content: '#'; }
+  .visitors-table td:nth-child(2)::before { content: 'Time'; }
+  .visitors-table td:nth-child(3)::before { content: 'Location'; }
+  .visitors-table td:nth-child(4)::before { content: 'Page'; }
+  .visitors-table td:nth-child(5)::before { content: 'Referrer'; }
+  .visitors-table td:nth-child(6)::before { content: 'Browser'; }
 
   /* ── Modal — full width ── */
   .modal {
@@ -1225,52 +1275,7 @@ html, body { overflow-x: hidden; max-width: 100%; }
   /* ── Inputs — prevent iOS zoom ── */
   input, select, textarea { font-size: 16px; }
 
-  /* ── Visitors table becomes readable cards on narrow screens ── */
-  .visitors-table-wrap {
-    overflow: visible;
-    border: none;
-    max-width: 100%;
-  }
-  .visitors-table-wrap::before { display: none; }
-  .visitors-table,
-  .visitors-table thead,
-  .visitors-table tbody,
-  .visitors-table tr,
-  .visitors-table td {
-    display: block;
-    width: 100%;
-    min-width: 0;
-  }
-  .visitors-table { border-collapse: separate; border-spacing: 0; }
-  .visitors-table thead { display: none; }
-  .visitors-table tr {
-    background: var(--bg-2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: .75rem;
-    margin-bottom: .75rem;
-  }
-  .visitors-table td {
-    display: grid;
-    grid-template-columns: 92px minmax(0, 1fr);
-    gap: .75rem;
-    padding: .45rem 0;
-    border-bottom: 1px solid var(--border-s);
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
-  .visitors-table td:last-child { border-bottom: none; }
-  .visitors-table td::before {
-    color: var(--accent);
-    font-size: .62rem;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-  }
-  .visitors-table td:nth-child(1)::before { content: '#'; }
-  .visitors-table td:nth-child(2)::before { content: 'Time'; }
-  .visitors-table td:nth-child(3)::before { content: 'Page'; }
-  .visitors-table td:nth-child(4)::before { content: 'Referrer'; }
-  .visitors-table td:nth-child(5)::before { content: 'Browser'; }
+  .visitors-table td { grid-template-columns: 92px minmax(0, 1fr); }
 
   /* ── Broadcast form ── */
   .broadcast-form { gap: .75rem; }

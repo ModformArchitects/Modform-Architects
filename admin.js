@@ -316,6 +316,13 @@ function shortenUA(ua) {
   if (/Safari/.test(ua)) return 'Safari';
   return 'Other';
 }
+function visitorLocation(v) {
+  var parts = [];
+  if (v.city) parts.push(v.city);
+  if (v.region && v.region !== v.city) parts.push(v.region);
+  if (!parts.length && v.country) parts.push(v.country);
+  return parts.join(', ') || 'Unknown';
+}
 function statusBadge(s) {
   return '<span class="status-badge ' + esc(s || 'new') + '">' + esc(s || 'new') + '</span>';
 }
@@ -902,7 +909,7 @@ function renderVisitorsPanel() {
   var emptyEl = $('visitorsEmpty');
   if (!tbody) return;
 
-  var recent = visitors.slice().reverse().slice(0, 50);
+  var recent = sortNewestFirst(visitors).slice(0, 50);
   if (!recent.length) {
     tbody.innerHTML = '';
     if (emptyEl) emptyEl.hidden = false;
@@ -912,8 +919,9 @@ function renderVisitorsPanel() {
 
   tbody.innerHTML = recent.map(function(v, i) {
     return '<tr>'
-      + '<td style="color:var(--muted)">' + (recent.length - i) + '</td>'
+      + '<td style="color:var(--muted)">' + (i + 1) + '</td>'
       + '<td>' + fmtDate(v.ts) + '</td>'
+      + '<td style="font-size:.75rem;color:var(--muted)">' + esc(visitorLocation(v)) + '</td>'
       + '<td style="font-size:.75rem;color:var(--muted)">' + esc(v.page || '/') + '</td>'
       + '<td style="font-size:.75rem;color:var(--muted)">' + esc((v.ref || 'direct').replace(/^https?:\/\//, '').slice(0, 30)) + '</td>'
       + '<td style="font-size:.75rem;color:var(--muted)">' + shortenUA(v.ua) + '</td>'
