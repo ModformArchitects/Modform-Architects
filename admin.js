@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════
-   Ar.Shrishtika — Admin Dashboard
+   EcolineArchitect — Admin Dashboard
    ════════════════════════════════════════════════════════════ */
 
 'use strict';
@@ -241,6 +241,59 @@ function saveLeads(arr) {
 function getVisitors() {
   try { return JSON.parse(localStorage.getItem(VISITORS_KEY) || '[]'); } catch(e) { return []; }
 }
+function saveVisitors(arr) {
+  try { localStorage.setItem(VISITORS_KEY, JSON.stringify(arr)); } catch(e) {}
+}
+
+function sortNewestFirst(arr) {
+  return arr.slice().sort(function(a, b) {
+    return new Date(b.ts || 0).getTime() - new Date(a.ts || 0).getTime();
+  });
+}
+
+function mergeRecords(localRows, remoteRows, limit) {
+  var map = {};
+  (remoteRows || []).forEach(function(row) {
+    if (row && row.id) map[String(row.id)] = row;
+  });
+  (localRows || []).forEach(function(row) {
+    if (!row || !row.id) return;
+    var key = String(row.id);
+    map[key] = Object.assign({}, map[key] || {}, row);
+  });
+  return sortNewestFirst(Object.keys(map).map(function(key) { return map[key]; })).slice(0, limit || 500);
+}
+
+function refreshActivePanel() {
+  renderOverview();
+  var active = document.querySelector('.sb-link.active');
+  var panelId = active ? active.dataset.panel : 'overview';
+  if (panelId === 'leads') renderLeadsPanel($('leadsFilter') ? $('leadsFilter').value : 'all');
+  if (panelId === 'visitors') renderVisitorsPanel();
+  if (panelId === 'marketing') renderMarketing();
+}
+
+function syncDatabaseData(silent) {
+  if (!window.EcolineDB || !window.EcolineDB.enabled) return Promise.resolve(false);
+  return Promise.all([
+    window.EcolineDB.fetchLeads(500),
+    window.EcolineDB.fetchVisitors(500),
+  ]).then(function(results) {
+    var remoteLeads = results[0] || [];
+    var remoteVisitors = results[1] || [];
+    var changed = remoteLeads.length || remoteVisitors.length;
+
+    if (remoteLeads.length) saveLeads(mergeRecords(getLeads(), remoteLeads, 500));
+    if (remoteVisitors.length) saveVisitors(mergeRecords(getVisitors(), remoteVisitors, 500));
+
+    if (changed && !silent) showToast('Database data synced.', 'success');
+    return Boolean(changed);
+  }).catch(function(err) {
+    if (!silent) showToast('Database sync failed. Local data is still available.', 'error');
+    if (window.console && console.warn) console.warn('[EcolineDB] sync failed:', err);
+    return false;
+  });
+}
 
 function isToday(ts) {
   var d = new Date(ts), t = new Date();
@@ -305,6 +358,9 @@ function showDashboard() {
   if (ls) ls.style.display = 'none';
   if (db) { db.style.display = 'flex'; db.removeAttribute('hidden'); }
   renderOverview();
+  syncDatabaseData(true).then(function(synced) {
+    if (synced) refreshActivePanel();
+  });
 }
 
 function showLogin() {
@@ -771,6 +827,9 @@ function cycleStatus(id) {
     if (leads[i].id === id) {
       var idx = CYCLE.indexOf(leads[i].status || 'new');
       leads[i].status = CYCLE[(idx + 1) % CYCLE.length];
+      if (window.EcolineDB && window.EcolineDB.enabled) {
+        window.EcolineDB.updateLeadStatus(id, leads[i].status);
+      }
       break;
     }
   }
@@ -783,6 +842,7 @@ function cycleStatus(id) {
 function deleteLead(id) {
   showConfirm('Delete this lead?', function() {
     saveLeads(getLeads().filter(function(l) { return l.id !== id; }));
+    if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.deleteLead(id);
     var lf = $('leadsFilter');
     renderLeadsPanel(lf ? lf.value : 'all');
     renderOverview();

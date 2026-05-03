@@ -38,11 +38,11 @@
     .proj-hero-content {
       position: relative;
       z-index: 2;
-      padding: 4rem var(--container-pad, 2rem);
+      padding: 4rem var(--gutter);
       width: 100%;
     }
     .proj-cat {
-      font-family: var(--font-sans);
+      font-family: var(--sans);
       font-size: .75rem;
       letter-spacing: .18em;
       text-transform: uppercase;
@@ -51,7 +51,7 @@
       margin-bottom: 1rem;
     }
     .proj-title {
-      font-family: var(--font-serif);
+      font-family: var(--serif);
       font-size: clamp(2.4rem, 7vw, 5.5rem);
       font-weight: 400;
       color: #fff;
@@ -61,15 +61,15 @@
     .proj-loc {
       font-size: .9rem;
       color: rgba(255,255,255,.55);
-      font-family: var(--font-sans);
+      font-family: var(--sans);
     }
     .proj-back {
       position: absolute;
       top: 7rem;
-      left: var(--container-pad, 2rem);
+      left: var(--gutter);
       z-index: 3;
       font-size: .8rem;
-      font-family: var(--font-sans);
+      font-family: var(--sans);
       color: rgba(255,255,255,.6);
       letter-spacing: .05em;
       transition: color .2s;
@@ -103,19 +103,19 @@
       font-size: .72rem;
       letter-spacing: .14em;
       text-transform: uppercase;
-      color: var(--text-muted);
-      font-family: var(--font-sans);
+      color: var(--muted);
+      font-family: var(--sans);
     }
     .proj-meta-val {
-      font-family: var(--font-serif);
+      font-family: var(--serif);
       font-size: 1.05rem;
-      color: var(--text);
+      color: var(--fg);
     }
     .proj-brief {
       font-size: 1.05rem;
       line-height: 1.85;
-      color: var(--text-muted);
-      font-family: var(--font-sans);
+      color: var(--muted);
+      font-family: var(--sans);
       padding-top: .5rem;
     }
 
@@ -143,10 +143,10 @@
     .proj-related-section {
       padding: 5rem 0;
       border-top: 1px solid var(--border);
-      background: var(--surface);
+      background: var(--bg-2);
     }
     .proj-related-headline {
-      font-family: var(--font-serif);
+      font-family: var(--serif);
       font-size: clamp(1.8rem, 4vw, 3rem);
       font-weight: 400;
       margin: .75rem 0 3rem;
@@ -182,16 +182,16 @@
       align-items: baseline;
     }
     .proj-rel-name {
-      font-family: var(--font-serif);
+      font-family: var(--serif);
       font-size: 1.1rem;
-      color: var(--text);
+      color: var(--fg);
     }
     .proj-rel-arrow { color: var(--accent); }
     .proj-rel-sub {
       font-size: .78rem;
-      color: var(--text-muted);
+      color: var(--muted);
       margin-top: .4rem;
-      font-family: var(--font-sans);
+      font-family: var(--sans);
     }
 
     @media (max-width: 900px) {
@@ -243,7 +243,7 @@
   <!-- PROJECT HERO -->
   <div class="proj-hero" id="projHero">
     <a href="index.html#projects" class="proj-back">← Back to Work</a>
-    <img id="projHeroImg" src="" alt="" class="proj-hero-img" />
+    <img id="projHeroImg" src="" alt="" class="proj-hero-img" width="1280" height="900" />
     <div class="proj-hero-overlay"></div>
     <div class="proj-hero-content">
       <span class="proj-cat" id="projCat"></span>
@@ -296,10 +296,8 @@
           </div>
           <div class="footer-nav-col">
             <p class="footer-nav-heading">Connect</p>
-            <a href="#">Instagram</a>
-            <a href="#">LinkedIn</a>
-            <a href="#">Behance</a>
             <a href="https://wa.me/919452861841" target="_blank" rel="noopener">WhatsApp</a>
+            <a href="mailto:shrishtikapal6@gmail.com">Email</a>
           </div>
         </nav>
       </div>
@@ -318,6 +316,7 @@
     <span class="wa-float-tip">Chat on WhatsApp</span>
   </a>
 
+  <script src="projects-data.js"></script>
   <script>
   /* ── Theme toggle ── */
   (function() {
@@ -351,71 +350,21 @@
     (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(0);
   }
 
-  /* ── Project data ── */
-  var PROJECTS = [
-    {
-      name: 'Jal Villa', category: 'Residential', location: 'Alibaug, Maharashtra',
-      year: '2023', area: '620 sqm', status: 'Completed',
-      images: [
-        'assets/projects/residence-01.jpeg',
-        'assets/projects/residence-02.jpeg',
-        'assets/projects/residence-03.jpeg',
-      ],
-      desc: 'Jal Villa is a waterfront retreat on the Alibaug coastline, designed around the monsoon. The building\'s massing — three interlocking volumes on a laterite plinth — responds to the tidal rhythm and the morning sun. Raw concrete, reclaimed teak, and local Konkan stone form a palette that weathers beautifully against the salt air. A central courtyard channels the southwest monsoon breeze through every room, making air-conditioning redundant for nine months of the year.',
-    },
-    {
-      name: 'Vayu Tower', category: 'Commercial', location: 'BKC, Mumbai',
-      year: '2022', area: '24,000 sqm', status: 'Completed',
-      images: [
-        'assets/projects/residence-02.jpeg',
-        'assets/projects/residence-04.jpeg',
-        'assets/projects/residence-05.jpeg',
-      ],
-      desc: 'A 22-storey mixed-use tower in the Bandra–Kurla Complex, Vayu Tower integrates Grade-A office, retail, and a public atrium within a contemporary envelope informed by the Indian jali screen. The double-skin facade reduces solar heat gain by 38% without compromising views. A sky garden on the 14th floor acts as a social and ecological threshold — open to the city above the monsoon haze. The structural grid is expressed as a deep concrete lattice, giving the facade rhythm, depth, and shade.',
-    },
-    {
-      name: 'Aranya Cultural Centre', category: 'Cultural', location: 'Bengaluru',
-      year: '2022', area: '3,800 sqm', status: 'Completed',
-      images: [
-        'assets/projects/residence-03.jpeg',
-        'assets/projects/residence-01.jpeg',
-        'assets/projects/residence-05.jpeg',
-      ],
-      desc: 'Aranya Cultural Centre is a home for Bengaluru\'s performing and visual arts communities. The building is organised around a central banyan-shaded courtyard — a deliberate echo of the traditional Indian agora. Rough basalt walls absorb the Karnataka heat; high clerestory windows flood galleries with northern diffused light. The main auditorium seats 480 and is tuned for Carnatic vocal and Bharatanatyam performance. The building received the IIA National Award 2023.',
-    },
-    {
-      name: 'Haveli Twelve', category: 'Residential', location: 'Jaipur, Rajasthan',
-      year: '2021', area: '880 sqm', status: 'Completed',
-      images: [
-        'assets/projects/residence-04.jpeg',
-        'assets/projects/residence-03.jpeg',
-        'assets/projects/residence-01.jpeg',
-      ],
-      desc: 'Haveli Twelve reinterprets the Rajasthani haveli typology for contemporary family living. Set in a lane in Jaipur\'s old city, the house reveals its interior gradually — a threshold, a baithak, an inner courtyard, and finally the private quarters beyond. Hand-cut Dholpur stone, carved jali screens, and lime-plastered vaults honour local craft while supporting modern infrastructure invisibly. The project was developed in close consultation with traditional stone-carving families from Jaisalmer.',
-    },
-    {
-      name: 'Ganga Riverfront Precinct', category: 'Urban', location: 'Varanasi, UP',
-      year: '2021', area: '6.4 ha masterplan', status: 'In Progress',
-      images: [
-        'assets/projects/residence-05.jpeg',
-        'assets/projects/residence-02.jpeg',
-        'assets/projects/residence-02.jpeg',
-      ],
-      desc: 'A participatory masterplan for a 6.4-hectare stretch of Varanasi\'s ghats, developed in close collaboration with residents, priests, and the Varanasi Municipal Corporation. The proposal enhances the ritual life of the river while improving flood resilience, pedestrian access, and sanitation infrastructure. The plan preserves the layered temporal character of the ghats while making them safer and more dignified for the millions of pilgrims who use them each year. Four phases over twelve years.',
-    },
-    {
-      name: 'Lattice Hub', category: 'Commercial', location: 'Hyderabad, Telangana',
-      year: '2020', area: '5,200 sqm', status: 'Completed',
-      images: [
-        'assets/projects/residence-02.jpeg',
-        'assets/projects/residence-04.jpeg',
-        'assets/projects/residence-03.jpeg',
-      ],
-      desc: 'Lattice Hub is a technology campus in HITEC City designed around community, craft, and concentration. The facade — a deep concrete lattice screen inspired by Hyderabadi stone carving — reduces heat gain while casting geometric shadow patterns that move through the interior over the day. Inside, varied environments — alcoves, open terraces, a central street, and a rooftop amphitheatre — replace open-plan uniformity. The building uses 42% less energy than a conventional office of equivalent size.',
-    },
-  ];
+  /* Project data */
+  var PROJECTS = window.ECOLINE_PROJECTS || [];
+  var IMAGE_SIZES = {
+    'assets/projects/residence-01.jpeg': [1280, 800],
+    'assets/projects/residence-02.jpeg': [1280, 1280],
+    'assets/projects/residence-03.jpeg': [1250, 893],
+    'assets/projects/residence-04.jpeg': [1280, 914],
+    'assets/projects/residence-05.jpeg': [1280, 1280],
+  };
+  function imageAttrs(src) {
+    var size = IMAGE_SIZES[src] || [1280, 900];
+    return ' width="' + size[0] + '" height="' + size[1] + '"';
+  }
 
-  /* ── Render project ── */
+  /* Render project */
   (function renderProject() {
     var params = new URLSearchParams(window.location.search);
     var idx = parseInt(params.get('id'), 10);
@@ -425,8 +374,12 @@
     document.title = p.name + ' — EcolineArchitect';
 
     var heroEl = document.getElementById('projHero');
-    document.getElementById('projHeroImg').src = p.images[0];
-    document.getElementById('projHeroImg').alt = p.name;
+    var heroImg = document.getElementById('projHeroImg');
+    var heroSize = IMAGE_SIZES[p.images[0]] || [1280, 900];
+    heroImg.src = p.images[0];
+    heroImg.alt = p.name;
+    heroImg.width = heroSize[0];
+    heroImg.height = heroSize[1];
     document.getElementById('projCat').textContent = p.category;
     document.getElementById('projTitle').textContent = p.name;
     document.getElementById('projLoc').textContent = p.location + ' · ' + p.year;
@@ -451,7 +404,7 @@
     var galleryEl = document.getElementById('projGallery');
     galleryEl.innerHTML = p.images.map(function(src, i) {
       return '<div class="proj-gallery-img">'
-        + '<img src="' + src + '" alt="' + p.name + ' view ' + (i + 1) + '" loading="' + (i === 0 ? 'eager' : 'lazy') + '" />'
+        + '<img src="' + src + '" alt="' + p.name + ' view ' + (i + 1) + '" loading="' + (i === 0 ? 'eager' : 'lazy') + '"' + imageAttrs(src) + ' />'
         + '</div>';
     }).join('');
 
@@ -463,7 +416,7 @@
     relatedEl.innerHTML = relatedIdxs.map(function(ri) {
       var rp = PROJECTS[ri];
       return '<a class="proj-rel-card" href="project.html?id=' + ri + '">'
-        + '<div class="proj-rel-img"><img src="' + rp.images[0].replace('w=1400','w=600') + '" alt="' + rp.name + '" loading="lazy" /></div>'
+        + '<div class="proj-rel-img"><img src="' + rp.images[0] + '" alt="' + rp.name + '" loading="lazy"' + imageAttrs(rp.images[0]) + ' /></div>'
         + '<div class="proj-rel-meta">'
         +   '<span class="proj-rel-name">' + rp.name + '</span>'
         +   '<span class="proj-rel-arrow">↗</span>'

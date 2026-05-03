@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════
-   Ar.Shrishtika — Architecture & Design Studio
+   EcolineArchitect — Architecture & Design Studio
    Stylesheet v3 — Full theme system + Creative v2
    ════════════════════════════════════════════════════════════ */
 
@@ -569,6 +569,38 @@ body.cursor-view  .cursor-label { opacity: 1; }
   font-weight: 300; line-height: 1.22; color: var(--fg);
 }
 .about-headline em { font-style: italic; color: var(--accent); }
+.principal-profile {
+  display: flex; align-items: center; gap: 1.15rem;
+  max-width: 520px; margin-top: clamp(1.7rem, 3vw, 2.6rem);
+  padding-top: 1.4rem; border-top: 1px solid var(--border);
+}
+.principal-portrait {
+  position: relative; overflow: hidden; flex: 0 0 auto;
+  width: clamp(132px, 15vw, 178px); height: clamp(132px, 15vw, 178px);
+  margin: 0; border-radius: 50%;
+  background: var(--fg-03); border: 2px solid var(--accent);
+  box-shadow: 0 18px 38px rgba(0,0,0,.24), 0 0 0 8px var(--fg-08);
+}
+.principal-portrait img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center 30%;
+  filter: brightness(1.03) contrast(1.05) saturate(1.04);
+  transition: transform .9s var(--ease), filter .45s;
+}
+.principal-portrait:hover img { transform: scale(1.035); }
+.principal-profile-copy {
+  display: flex; flex-direction: column; gap: .35rem;
+}
+.principal-profile-copy span {
+  font-size: .62rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--accent);
+}
+.principal-profile-copy strong {
+  font-family: var(--serif); font-size: clamp(1.3rem, 2vw, 1.9rem);
+  font-weight: 400; color: var(--fg);
+}
+.principal-profile-copy p {
+  max-width: 280px; font-size: .82rem; line-height: 1.65; color: var(--fg-62);
+}
 .about-body {
   font-size: clamp(.9rem,1.2vw,1.05rem); line-height: 2;
   color: var(--fg-62); margin-bottom: 1.6rem;
@@ -578,10 +610,6 @@ body.cursor-view  .cursor-label { opacity: 1; }
   display: flex; align-items: center; gap: 1.2rem;
   margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border);
   transition: border-color .45s;
-}
-.about-avatar {
-  width: 52px; height: 52px; border-radius: 50%;
-  object-fit: cover; flex-shrink: 0; border: 1px solid var(--border);
 }
 .about-signature strong {
   display: block; font-family: var(--serif); font-size: 1.05rem; font-weight: 400;
@@ -1157,64 +1185,6 @@ body.cursor-view  .cursor-label { opacity: 1; }
 }
 
 /* ════════════════════════════════════════════════════════════
-   TESTIMONIALS
-   ════════════════════════════════════════════════════════════ */
-.testimonials-headline {
-  font-family: var(--serif); font-size: clamp(2rem,4vw,3.8rem);
-  font-weight: 300; line-height: 1.2; margin-bottom: clamp(3rem,5vw,4.5rem);
-}
-.testimonials-quote-mark {
-  font-family: var(--serif); font-size: clamp(6rem,18vw,16rem);
-  color: var(--a-dim); line-height: .75; font-style: italic;
-  margin-bottom: -1rem; display: block;
-  pointer-events: none; user-select: none;
-}
-.testimonials-slider { position: relative; min-height: 240px; }
-.testimonial { display: none; animation: fadeSlide .6s var(--ease) both; }
-.testimonial.active { display: block; }
-@keyframes fadeSlide { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
-.testimonial-text {
-  font-family: var(--serif); font-size: clamp(1.2rem,2.6vw,1.9rem);
-  font-weight: 300; font-style: italic; line-height: 1.65;
-  color: var(--fg); max-width: 860px; margin-bottom: 2.5rem;
-}
-.testimonial-author { display: flex; align-items: center; gap: 1.2rem; }
-.testimonial-author img {
-  width: 52px; height: 52px; border-radius: 50%; object-fit: cover;
-  flex-shrink: 0; border: 1px solid var(--border);
-}
-.testimonial-author strong { display: block; font-family: var(--serif); font-size: 1rem; font-weight: 400; }
-.testimonial-author span  { font-size: .7rem; letter-spacing: .1em; color: var(--muted); }
-.testimonials-controls { display: flex; align-items: center; gap: 1.5rem; margin-top: 3rem; }
-.t-prev, .t-next { font-size: 1.1rem; color: var(--muted); transition: color .3s, transform .3s var(--spring); padding: .5rem; }
-.t-prev:hover { color: var(--accent); transform: translateX(-3px); }
-.t-next:hover { color: var(--accent-2); transform: translateX(3px); }
-.t-dots { display: flex; gap: .7rem; }
-.t-dot {
-  width: 28px; height: 1px; background: var(--fg-18);
-  transition: background .3s, width .35s var(--spring);
-}
-.t-dot.active { width: 48px; }
-.t-dot:nth-child(odd).active  { background: var(--accent); }
-.t-dot:nth-child(even).active { background: var(--accent-2); }
-
-/* Clients */
-.clients-logos { margin-top: clamp(4rem,7vw,6rem); padding-top: 3rem; border-top: 1px solid var(--border); transition: border-color .45s; }
-.clients-label { font-size: .68rem; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); margin-bottom: 2rem; }
-.clients-grid {
-  display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
-  gap: 1px; background: var(--border); border: 1px solid var(--border);
-  transition: background .45s, border-color .45s;
-}
-.client-logo {
-  padding: 1.6rem 2rem; background: var(--bg);
-  font-family: var(--serif); font-size: 1rem; font-weight: 400;
-  color: var(--fg-28); text-align: center;
-  transition: color .3s, background .3s;
-}
-.client-logo:hover { color: var(--fg-62); background: var(--fg-03); }
-
-/* ════════════════════════════════════════════════════════════
    CONTACT
    ════════════════════════════════════════════════════════════ */
 .contact-grid {
@@ -1487,13 +1457,11 @@ a.contact-value.whatsapp-link:hover { color: #25d366; }
   .footer-bottom { flex-direction: column; gap: .5rem; text-align: center; }
   .footer::before { display: none; }
 
-  .testimonials-quote-mark { font-size: 5rem; }
 }
 
 @media (max-width: 480px) {
   :root { --gutter: 1.2rem; }
   .services-list { grid-template-columns: 1fr; }
-  .clients-grid { grid-template-columns: 1fr 1fr; }
   .hero-headline { font-size: clamp(2.6rem,11vw,4rem); }
 }
 
@@ -2264,6 +2232,7 @@ body { overflow-x: hidden; }
   .wa-float-tip { display: none; }
   .back-to-top { bottom: 5.5rem; right: 1rem; width: 2.4rem; height: 2.4rem; }
   .chatbot    { left: 1rem; bottom: 1.25rem; }
+  .chat-launch-label { display: none; }
   .chat-bubble { width: 3rem; height: 3rem; }
 }
 
@@ -2285,14 +2254,6 @@ body { overflow-x: hidden; }
 
   /* Why Choose Us closing quote */
   .why-us-closing { font-size: .95rem; padding: 0 .5rem; }
-
-  /* Testimonials — smaller quote mark */
-  .testimonials-quote-mark { font-size: 4rem; top: -1rem; }
-  .testimonial-text { font-size: .9rem; }
-
-  /* Clients grid — 2 cols */
-  .clients-grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
-  .client-logo  { font-size: .72rem; padding: .75rem .5rem; }
 
   /* Contact form — full width select */
   .form-group select { appearance: none; -webkit-appearance: none; }

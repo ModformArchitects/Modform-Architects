@@ -1,103 +1,27 @@
 /* ════════════════════════════════════════════════════════════
-   Ar.Shrishtika — Architecture & Design Studio
+   EcolineArchitect — Architecture & Design Studio
    Main JavaScript — v3
    ════════════════════════════════════════════════════════════ */
 
 'use strict';
 
-/* ── Project data (for lightbox) ─────────────────────────── */
-const PROJECTS = [
-  {
-    name: 'Jal Villa',
-    slug: 'jal-villa',
-    category: 'Residential',
-    location: 'Alibaug, Maharashtra',
-    year: '2023',
-    area: '620 sqm',
-    status: 'Completed',
-    images: [
-      'assets/projects/residence-01.jpeg',
-      'assets/projects/residence-02.jpeg',
-      'assets/projects/residence-03.jpeg',
-    ],
-    desc: 'Jal Villa is a waterfront retreat on the Alibaug coastline, designed around the monsoon. The building\'s massing — three interlocking volumes on a laterite plinth — responds to the tidal rhythm and the morning sun. Raw concrete, reclaimed teak, and local Konkan stone form a palette that weathers beautifully against the salt air. A central courtyard channels the southwest monsoon breeze through every room.',
-  },
-  {
-    name: 'Vayu Tower',
-    slug: 'vayu-tower',
-    category: 'Commercial',
-    location: 'BKC, Mumbai',
-    year: '2022',
-    area: '24,000 sqm',
-    status: 'Completed',
-    images: [
-      'assets/projects/residence-02.jpeg',
-      'assets/projects/residence-04.jpeg',
-      'assets/projects/residence-05.jpeg',
-    ],
-    desc: 'A 22-storey mixed-use tower in the Bandra–Kurla Complex, Vayu Tower integrates Grade-A office, retail, and a public atrium within a contemporary envelope informed by the Indian jali screen. The double-skin facade reduces solar heat gain by 38% without compromising views. A sky garden on the 14th floor acts as a social and ecological threshold — open to the city above the monsoon haze.',
-  },
-  {
-    name: 'Aranya Cultural Centre',
-    slug: 'aranya-centre',
-    category: 'Cultural',
-    location: 'Bengaluru',
-    year: '2022',
-    area: '3,800 sqm',
-    status: 'Completed',
-    images: [
-      'assets/projects/residence-03.jpeg',
-      'assets/projects/residence-01.jpeg',
-      'assets/projects/residence-05.jpeg',
-    ],
-    desc: 'Aranya Cultural Centre is a home for Bengaluru\'s performing and visual arts. Organised around a banyan-shaded courtyard — a deliberate echo of the traditional Indian agora — the building uses rough basalt walls to absorb Karnataka\'s heat while high clerestory windows flood galleries with northern diffused light. The 480-seat auditorium is tuned for Carnatic vocal and Bharatanatyam performance.',
-  },
-  {
-    name: 'Haveli Twelve',
-    slug: 'haveli-twelve',
-    category: 'Residential',
-    location: 'Jaipur, Rajasthan',
-    year: '2021',
-    area: '880 sqm',
-    status: 'Completed',
-    images: [
-      'assets/projects/residence-04.jpeg',
-      'assets/projects/residence-03.jpeg',
-      'assets/projects/residence-01.jpeg',
-    ],
-    desc: 'Haveli Twelve reinterprets the Rajasthani haveli typology for contemporary family living. Set in a lane in Jaipur\'s old city, the house reveals its interior gradually — a threshold, a baithak, an inner courtyard, and finally the private quarters beyond. Hand-cut Dholpur stone, carved jali screens, and lime-plastered vaults honour local craft while carrying modern infrastructure invisibly.',
-  },
-  {
-    name: 'Ganga Riverfront Precinct',
-    slug: 'ganga-precinct',
-    category: 'Urban',
-    location: 'Varanasi, UP',
-    year: '2021',
-    area: '6.4 ha masterplan',
-    status: 'In Progress',
-    images: [
-      'assets/projects/residence-05.jpeg',
-      'assets/projects/residence-02.jpeg',
-      'assets/projects/residence-02.jpeg',
-    ],
-    desc: 'A participatory masterplan for a 6.4-hectare stretch of Varanasi\'s ghats, developed with residents, priests, and the Varanasi Municipal Corporation. The proposal enhances the ritual life of the river while improving flood resilience, pedestrian access, and sanitation. Four phases over twelve years — preserving the layered temporal character of the ghats while making them safer for the millions who use them each year.',
-  },
-  {
-    name: 'Lattice Hub',
-    slug: 'lattice-hub',
-    category: 'Commercial',
-    location: 'Hyderabad, Telangana',
-    year: '2020',
-    area: '5,200 sqm',
-    status: 'Completed',
-    images: [
-      'assets/projects/residence-02.jpeg',
-      'assets/projects/residence-04.jpeg',
-      'assets/projects/residence-03.jpeg',
-    ],
-    desc: 'Lattice Hub is a technology campus in HITEC City designed around community, craft, and concentration. The facade — a deep concrete lattice inspired by Hyderabadi stone carving — reduces heat gain while casting geometric shadow patterns that move through the interior over the day. Inside: alcoves, open terraces, a central street, and a rooftop amphitheatre replace open-plan uniformity.',
-  },
-];
+function createRecordId() {
+  return Date.now() * 1000 + Math.floor(Math.random() * 1000);
+}
+
+const PROJECTS = window.ECOLINE_PROJECTS || [];
+const IMAGE_SIZES = {
+  'assets/projects/residence-01.jpeg': [1280, 800],
+  'assets/projects/residence-02.jpeg': [1280, 1280],
+  'assets/projects/residence-03.jpeg': [1250, 893],
+  'assets/projects/residence-04.jpeg': [1280, 914],
+  'assets/projects/residence-05.jpeg': [1280, 1280],
+};
+
+function imageSizeAttrs(src) {
+  const size = IMAGE_SIZES[src] || [1280, 900];
+  return `width="${size[0]}" height="${size[1]}"`;
+}
 
 /* ══════════════════════════════════════════════════════════
    THEME TOGGLE
@@ -168,16 +92,18 @@ window.addEventListener('scroll', () => {
    ══════════════════════════════════════════════════════════ */
 (function trackVisit() {
   try {
-    const visitors = JSON.parse(localStorage.getItem('ars_visitors') || '[]');
-    visitors.push({
-      id: Date.now(),
+    const visitor = {
+      id: createRecordId(),
       ts: new Date().toISOString(),
       page: location.pathname,
       ref: document.referrer || 'direct',
       ua: navigator.userAgent,
-    });
+    };
+    const visitors = JSON.parse(localStorage.getItem('ars_visitors') || '[]');
+    visitors.push(visitor);
     if (visitors.length > 500) visitors.splice(0, visitors.length - 500);
     localStorage.setItem('ars_visitors', JSON.stringify(visitors));
+    if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.insertVisitor(visitor);
   } catch (_) {}
 })();
 
@@ -266,7 +192,7 @@ let lenis;
       document.body.classList.add('cursor-view');
       document.body.classList.remove('cursor-hover');
       cursorLbl.textContent = 'VIEW';
-    } else if (el.closest('a, button, .filter-btn, .client-logo, .service-item, .t-dot, .lb-thumb')) {
+    } else if (el.closest('a, button, .filter-btn, .service-item, .lb-thumb')) {
       document.body.classList.add('cursor-hover');
       document.body.classList.remove('cursor-view');
       cursorLbl.textContent = '';
@@ -274,7 +200,7 @@ let lenis;
   });
   document.addEventListener('mouseout', e => {
     const el = e.target;
-    if (el.closest('.project-card, a, button, .filter-btn, .client-logo, .service-item, .t-dot, .lb-thumb')) {
+    if (el.closest('.project-card, a, button, .filter-btn, .service-item, .lb-thumb')) {
       document.body.classList.remove('cursor-hover', 'cursor-view');
       cursorLbl.textContent = '';
     }
@@ -421,12 +347,12 @@ document.addEventListener('DOMContentLoaded', initReveal);
       <div class="lb-grid">
         <div class="lb-images">
           <div class="lb-img-main">
-            <img src="${p.images[0]}" alt="${p.name}" id="lbMainImg" />
+            <img src="${p.images[0]}" alt="${p.name}" id="lbMainImg" ${imageSizeAttrs(p.images[0])} />
           </div>
           <div class="lb-img-thumbs">
             ${p.images.map((src, i) => `
               <div class="lb-thumb" data-src="${src}" data-active="${i === 0}">
-                <img src="${src}" alt="${p.name} view ${i + 1}" loading="lazy" />
+                <img src="${src}" alt="${p.name} view ${i + 1}" loading="lazy" ${imageSizeAttrs(src)} />
               </div>
             `).join('')}
           </div>
@@ -479,53 +405,6 @@ document.addEventListener('DOMContentLoaded', initReveal);
 })();
 
 /* ══════════════════════════════════════════════════════════
-   TESTIMONIALS SLIDER
-   ══════════════════════════════════════════════════════════ */
-(function initTestimonials() {
-  const slides = document.querySelectorAll('.testimonial');
-  const dots   = document.querySelectorAll('.t-dot');
-  const prev   = document.getElementById('tPrev');
-  const next   = document.getElementById('tNext');
-  if (!slides.length) return;
-
-  let current = 0;
-  let timer;
-
-  function goTo(idx) {
-    slides[current].classList.remove('active');
-    dots[current] && dots[current].classList.remove('active');
-    current = (idx + slides.length) % slides.length;
-    slides[current].classList.add('active');
-    dots[current] && dots[current].classList.add('active');
-  }
-
-  function startAuto() { timer = setInterval(() => goTo(current + 1), 6000); }
-  function stopAuto()  { clearInterval(timer); }
-
-  prev && prev.addEventListener('click', () => { stopAuto(); goTo(current - 1); startAuto(); });
-  next && next.addEventListener('click', () => { stopAuto(); goTo(current + 1); startAuto(); });
-  dots.forEach(dot => {
-    dot.addEventListener('click', () => {
-      stopAuto();
-      goTo(parseInt(dot.dataset.idx, 10));
-      startAuto();
-    });
-  });
-
-  const slider = document.getElementById('testimonialsSlider');
-  if (slider) {
-    let startX = 0;
-    slider.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
-    slider.addEventListener('touchend', e => {
-      const diff = startX - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 50) { stopAuto(); goTo(diff > 0 ? current + 1 : current - 1); startAuto(); }
-    });
-  }
-
-  startAuto();
-})();
-
-/* ══════════════════════════════════════════════════════════
    CONTACT FORM — EmailJS + localStorage lead capture
    ──────────────────────────────────────────────────────────
    Fill these three vars after creating a contact template
@@ -554,7 +433,7 @@ var FORM_TEMPLATE_ID = '';   // new template e.g. 'template_contact'
 
     const data = Object.fromEntries(new FormData(form));
     const lead = {
-      id: Date.now(),
+      id: createRecordId(),
       ts: new Date().toISOString(),
       source: 'website_form',
       status: 'new',
@@ -569,6 +448,7 @@ var FORM_TEMPLATE_ID = '';   // new template e.g. 'template_contact'
       const leads = JSON.parse(localStorage.getItem('ars_leads') || '[]');
       leads.unshift(lead);
       localStorage.setItem('ars_leads', JSON.stringify(leads));
+      if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.insertLead(lead);
     } catch (_) {}
 
     function onSuccess() {
@@ -664,8 +544,7 @@ var FORM_TEMPLATE_ID = '';   // new template e.g. 'template_contact'
       if (profiles.length > 200) profiles.splice(200);
       localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(profiles));
 
-      const leads = JSON.parse(localStorage.getItem(LEADS_KEY) || '[]');
-      leads.unshift({
+      const profileLead = {
         id: profile.id,
         ts: profile.ts,
         source: 'client_login',
@@ -675,9 +554,17 @@ var FORM_TEMPLATE_ID = '';   // new template e.g. 'template_contact'
         phone: profile.phone,
         project: profile.interest || profile.stage || 'Client access',
         message: 'Client access profile. Stage: ' + (profile.stage || 'Not shared') + '. Interest: ' + (profile.interest || 'Not shared') + '.',
-      });
+      };
+
+      const leads = JSON.parse(localStorage.getItem(LEADS_KEY) || '[]');
+      leads.unshift(profileLead);
       if (leads.length > 500) leads.splice(500);
       localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
+
+      if (window.EcolineDB && window.EcolineDB.enabled) {
+        window.EcolineDB.insertCustomerProfile(profile);
+        window.EcolineDB.insertLead(profileLead);
+      }
     } catch (_) {}
   }
 
@@ -687,7 +574,7 @@ var FORM_TEMPLATE_ID = '';   // new template e.g. 'template_contact'
 
     const data = Object.fromEntries(new FormData(form));
     const profile = {
-      id: Date.now(),
+      id: createRecordId(),
       ts: new Date().toISOString(),
       source: 'client_access',
       name: String(data.name || '').trim(),
@@ -1074,9 +961,8 @@ if (typeof Lenis === 'undefined') {
   function saveLead() {
     try {
       const contact = lead.phone || lead.email || '';
-      const leads = JSON.parse(localStorage.getItem('ars_leads') || '[]');
-      leads.unshift({
-        id: Date.now(),
+      const leadRecord = {
+        id: createRecordId(),
         ts: new Date().toISOString(),
         source: 'chatbot',
         status: 'new',
@@ -1085,9 +971,12 @@ if (typeof Lenis === 'undefined') {
         phone: contact.indexOf('@') > -1 ? '' : contact,
         project: lead.service || lead.intent || 'Website enquiry',
         message: lead.project || 'No brief shared.',
-      });
+      };
+      const leads = JSON.parse(localStorage.getItem('ars_leads') || '[]');
+      leads.unshift(leadRecord);
       if (leads.length > 500) leads.splice(500);
       localStorage.setItem('ars_leads', JSON.stringify(leads));
+      if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.insertLead(leadRecord);
     } catch (_) {}
   }
 
