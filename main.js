@@ -542,136 +542,115 @@ var FORM_TEMPLATE_ID = '';   // new template e.g. 'template_contact'
 })();
 
 /* ══════════════════════════════════════════════════════════
-   OPTIONAL CLIENT ACCESS — soft login + gated planning info
+   CLIENT ACCESS — simple profile form
    ══════════════════════════════════════════════════════════ */
 (function initClientAccess() {
-  const form       = document.getElementById('clientLoginForm');
   const loginView  = document.getElementById('clientLoginView');
   const portalView = document.getElementById('clientPortalView');
   const welcome    = document.getElementById('clientWelcome');
-  const errorEl    = document.getElementById('clientFormError');
+  const logoutBtn  = document.getElementById('clientLogoutBtn');
   const chatBtn    = document.getElementById('clientChatBtn');
   const contactBtn = document.getElementById('clientContactBtn');
-  const logoutBtn  = document.getElementById('clientLogoutBtn');
-  if (!form || !loginView || !portalView) return;
+  const form       = document.getElementById('clientLoginForm');
+  if (!loginView || !portalView) return;
 
   const CUSTOMER_KEY  = 'ars_customer_profile';
   const CUSTOMERS_KEY = 'ars_customer_profiles';
   const LEADS_KEY     = 'ars_leads';
 
-  function getSavedProfile() {
-    try { return JSON.parse(localStorage.getItem(CUSTOMER_KEY) || 'null'); }
-    catch (_) { return null; }
-  }
-
-  function setNavState(active) {
-    const link = document.querySelector('.nav-link[href="#client-access"], .nav-link[href="client-login.html"]');
-    if (link) link.textContent = active ? 'Client Area' : 'Client Login';
-  }
-
   function showPortal(profile) {
     loginView.hidden = true;
     portalView.hidden = false;
-    setNavState(true);
     if (welcome) {
-      const firstName = String(profile.name || 'Client').trim().split(/\s+/)[0];
-      welcome.textContent = 'Welcome, ' + firstName;
+      var first = String(profile.name || profile.email || 'Client').trim().split(/\s/)[0];
+      welcome.textContent = 'Welcome, ' + first;
     }
   }
 
   function showLogin() {
     portalView.hidden = true;
     loginView.hidden = false;
-    setNavState(false);
+  }
+
+  function getSavedProfile() {
+    try { return JSON.parse(localStorage.getItem(CUSTOMER_KEY) || 'null'); } catch(_) { return null; }
   }
 
   function saveProfile(profile) {
     try {
       localStorage.setItem(CUSTOMER_KEY, JSON.stringify(profile));
-
-      const profiles = JSON.parse(localStorage.getItem(CUSTOMERS_KEY) || '[]');
+      var profiles = JSON.parse(localStorage.getItem(CUSTOMERS_KEY) || '[]');
       profiles.unshift(profile);
       if (profiles.length > 200) profiles.splice(200);
       localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(profiles));
-
-      const profileLead = {
-        id: profile.id,
-        ts: profile.ts,
-        source: 'client_login',
-        status: 'new',
-        name: profile.name,
-        email: profile.email,
-        phone: profile.phone,
-        project: profile.interest || profile.stage || 'Client access',
-        message: 'Client access profile. Stage: ' + (profile.stage || 'Not shared') + '. Interest: ' + (profile.interest || 'Not shared') + '.',
+      var lead = {
+        id: profile.id, ts: profile.ts, source: 'client_login', status: 'new',
+        name: profile.name, email: profile.email, phone: profile.phone || '',
+        project: profile.interest || 'Client access',
+        message: 'Client profile. Stage: ' + (profile.stage || '—') + '. Interest: ' + (profile.interest || '—') + '.',
       };
-
-      const leads = JSON.parse(localStorage.getItem(LEADS_KEY) || '[]');
-      leads.unshift(profileLead);
+      var leads = JSON.parse(localStorage.getItem(LEADS_KEY) || '[]');
+      leads.unshift(lead);
       if (leads.length > 500) leads.splice(500);
       localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
-
       if (window.EcolineDB && window.EcolineDB.enabled) {
         window.EcolineDB.insertCustomerProfile(profile);
-        window.EcolineDB.insertLead(profileLead);
+        window.EcolineDB.insertLead(lead);
       }
-    } catch (_) {}
+    } catch(_) {}
   }
 
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    if (errorEl) errorEl.textContent = '';
+  var saved = getSavedProfile();
+  if (saved && (saved.name || saved.email)) showPortal(saved); else showLogin();
 
-    const data = Object.fromEntries(new FormData(form));
-    const profile = {
+  var errorEl = document.getElementById('clientFormError');
+
+  form && form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var name  = String((document.getElementById('clientName')  || {}).value || '').trim();
+    var phone = String((document.getElementById('clientPhone') || {}).value || '').trim();
+    var email = String((document.getElementById('clientEmail') || {}).value || '').trim();
+    if (!name) {
+      if (errorEl) errorEl.textContent = 'Please enter your name.';
+      return;
+    }
+    if (!phone && !email) {
+      if (errorEl) errorEl.textContent = 'Please enter a phone number or email.';
+      return;
+    }
+    if (errorEl) errorEl.textContent = '';
+    var profile = {
       id: createRecordId(),
       ts: new Date().toISOString(),
-      source: 'client_access',
-      name: String(data.name || '').trim(),
-      phone: String(data.phone || '').trim(),
-      email: String(data.email || '').trim(),
-      stage: data.stage || '',
-      interest: data.interest || '',
+      source: 'client_login',
+      name: name,
+      email: email,
+      phone: phone,
+      stage: ((document.getElementById('clientStage')    || {}).value) || '',
+      interest: ((document.getElementById('clientInterest') || {}).value) || '',
     };
-
-    if (!profile.name) {
-      if (errorEl) errorEl.textContent = 'Please enter your name to continue.';
-      return;
-    }
-    if (!profile.phone && !profile.email) {
-      if (errorEl) errorEl.textContent = 'Please share either an email or phone number for follow-up.';
-      return;
-    }
-
     saveProfile(profile);
     showPortal(profile);
   });
 
+  logoutBtn && logoutBtn.addEventListener('click', function() {
+    try { localStorage.removeItem(CUSTOMER_KEY); } catch(_) {}
+    form && form.reset();
+    showLogin();
+  });
+
   chatBtn && chatBtn.addEventListener('click', function() {
-    const bubble = document.getElementById('chatBubble');
-    const win = document.getElementById('chatbotWindow');
+    var bubble = document.getElementById('chatBubble');
+    var win    = document.getElementById('chatbotWindow');
     if (bubble && (!win || !win.classList.contains('open'))) bubble.click();
   });
 
   contactBtn && contactBtn.addEventListener('click', function() {
-    const contact = document.getElementById('contact');
-    if (!contact) {
-      window.location.href = 'index.html#contact';
-      return;
-    }
+    var contact = document.getElementById('contact');
+    if (!contact) { window.location.href = 'index.html#contact'; return; }
     if (typeof lenis !== 'undefined' && lenis) lenis.scrollTo(contact, { duration: 1.2 });
     else contact.scrollIntoView({ behavior: 'smooth' });
   });
-
-  logoutBtn && logoutBtn.addEventListener('click', function() {
-    try { localStorage.removeItem(CUSTOMER_KEY); } catch (_) {}
-    form.reset();
-    showLogin();
-  });
-
-  const saved = getSavedProfile();
-  if (saved && saved.name) showPortal(saved);
-  else showLogin();
 })();
 
 /* ══════════════════════════════════════════════════════════
