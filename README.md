@@ -1,6 +1,6 @@
-# Ar.Shristika — Architecture & Design Studio
+# Modform Architects — Architecture & Design Studio
 
-Portfolio website and admin CRM for **Ar. Shristika Pal**, Architect.
+Portfolio website and admin CRM for **Modform Architects** (Ar. Shrishtika Pal, Founding Principal).
 
 ---
 
@@ -101,7 +101,7 @@ No database. Everything lives in the browser's **localStorage**.
 | `ars_admin_auth`    | Admin session (sessionStorage)    |
 | `ars_lockout`       | Failed login counter + lockout    |
 | `ars_campaigns`     | Saved ad campaign drafts          |
-| `arshristika-theme` | Dark / Light preference           |
+| `modform-theme`     | Dark / Light preference           |
 
 ---
 
@@ -157,14 +157,14 @@ cd /Users/aryansharma/Downloads/Arch
 
 git init
 git add index.html style.css main.js admin.html admin.css admin.js README.md .gitignore
-git commit -m "Initial deploy — Ar.Shristika portfolio"
+git commit -m "Initial deploy — Modform Architects portfolio"
 git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/arshristika.git
+git remote add origin https://github.com/YOUR_USERNAME/modform.git
 git push -u origin main
 ```
 Then: repo → **Settings** → **Pages** → Source: `main` / `/ (root)` → **Save**
 
-Live URL: `https://YOUR_USERNAME.github.io/arshristika/`
+Live URL: `https://YOUR_USERNAME.github.io/modform/`
 
 ---
 

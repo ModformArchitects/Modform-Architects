@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════
-   EcolineArchitect — Optional Supabase Database Connector
+   Modform Architects — Optional Supabase Database Connector
    Fill SUPABASE_URL and SUPABASE_ANON_KEY after creating the tables
    from SUPABASE_SETUP.sql. Until then, the site keeps using localStorage.
    ════════════════════════════════════════════════════════════ */
@@ -36,7 +36,7 @@
 
   function failSoft(label, err) {
     if (window.console && console.warn) {
-      console.warn('[EcolineDB] ' + label + ' failed:', err);
+      console.warn('[ModformDB] ' + label + ' failed:', err);
     }
     return null;
   }
@@ -131,7 +131,7 @@
       .catch(function(err) { return failSoft('delete ' + table, err); });
   }
 
-  window.EcolineDB = {
+  window.ModformDB = {
     enabled: hasConfig(),
     tables: TABLES,
     insertLead: function(lead) { return insert(TABLES.leads, lead); },

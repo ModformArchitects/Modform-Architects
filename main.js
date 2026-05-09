@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════
-   EcolineArchitect — Architecture & Design Studio
+   Modform Architects — Architecture & Design Studio
    Main JavaScript — v3
    ════════════════════════════════════════════════════════════ */
 
@@ -9,7 +9,7 @@ function createRecordId() {
   return Date.now() * 1000 + Math.floor(Math.random() * 1000);
 }
 
-const PROJECTS = window.ECOLINE_PROJECTS || [];
+const PROJECTS = window.MODFORM_PROJECTS || [];
 const IMAGE_SIZES = {
   'assets/projects/residence-01.jpeg': [1280, 800],
   'assets/projects/residence-02.jpeg': [1280, 1280],
@@ -29,13 +29,13 @@ function imageSizeAttrs(src) {
 (function initTheme() {
   const html = document.documentElement;
   const btn  = document.getElementById('themeToggle');
-  const saved = localStorage.getItem('arshristika-theme') || 'dark';
+  const saved = localStorage.getItem('modform-theme') || 'dark';
   html.dataset.theme = saved;
 
   btn && btn.addEventListener('click', () => {
     const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
     html.dataset.theme = next;
-    localStorage.setItem('arshristika-theme', next);
+    localStorage.setItem('modform-theme', next);
   });
 })();
 
@@ -110,7 +110,7 @@ window.addEventListener('scroll', () => {
     }
 
     function insertRemote(record) {
-      if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.insertVisitor(record);
+      if (window.ModformDB && window.ModformDB.enabled) window.ModformDB.insertVisitor(record);
     }
 
     saveLocal(visitor);
@@ -152,7 +152,7 @@ window.addEventListener('scroll', () => {
       visitors.push(visitor);
       if (visitors.length > 500) visitors.splice(0, visitors.length - 500);
       localStorage.setItem('ars_visitors', JSON.stringify(visitors));
-      if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.insertVisitor(visitor);
+      if (window.ModformDB && window.ModformDB.enabled) window.ModformDB.insertVisitor(visitor);
     } catch (__) {}
   }
 })();
@@ -498,7 +498,7 @@ var FORM_TEMPLATE_ID = '';   // new template e.g. 'template_contact'
       const leads = JSON.parse(localStorage.getItem('ars_leads') || '[]');
       leads.unshift(lead);
       localStorage.setItem('ars_leads', JSON.stringify(leads));
-      if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.insertLead(lead);
+      if (window.ModformDB && window.ModformDB.enabled) window.ModformDB.insertLead(lead);
     } catch (_) {}
 
     function onSuccess() {
@@ -593,9 +593,9 @@ var FORM_TEMPLATE_ID = '';   // new template e.g. 'template_contact'
       leads.unshift(lead);
       if (leads.length > 500) leads.splice(500);
       localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
-      if (window.EcolineDB && window.EcolineDB.enabled) {
-        window.EcolineDB.insertCustomerProfile(profile);
-        window.EcolineDB.insertLead(lead);
+      if (window.ModformDB && window.ModformDB.enabled) {
+        window.ModformDB.insertCustomerProfile(profile);
+        window.ModformDB.insertLead(lead);
       }
     } catch(_) {}
   }
@@ -1006,7 +1006,7 @@ if (typeof Lenis === 'undefined') {
       leads.unshift(leadRecord);
       if (leads.length > 500) leads.splice(500);
       localStorage.setItem('ars_leads', JSON.stringify(leads));
-      if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.insertLead(leadRecord);
+      if (window.ModformDB && window.ModformDB.enabled) window.ModformDB.insertLead(leadRecord);
     } catch (_) {}
   }
 

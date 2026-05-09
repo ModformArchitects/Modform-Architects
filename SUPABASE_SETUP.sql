@@ -1,4 +1,4 @@
--- EcolineArchitect database setup for Supabase
+-- Modform Architects database setup for Supabase
 -- Run this in Supabase SQL Editor, then paste your project URL and anon key
 -- into database.js.
 

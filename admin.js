@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════
-   EcolineArchitect — Admin Dashboard
+   Modform Architects — Admin Dashboard
    ════════════════════════════════════════════════════════════ */
 
 'use strict';
@@ -274,10 +274,10 @@ function refreshActivePanel() {
 }
 
 function syncDatabaseData(silent) {
-  if (!window.EcolineDB || !window.EcolineDB.enabled) return Promise.resolve(false);
+  if (!window.ModformDB || !window.ModformDB.enabled) return Promise.resolve(false);
   return Promise.all([
-    window.EcolineDB.fetchLeads(500),
-    window.EcolineDB.fetchVisitors(500),
+    window.ModformDB.fetchLeads(500),
+    window.ModformDB.fetchVisitors(500),
   ]).then(function(results) {
     var remoteLeads = results[0] || [];
     var remoteVisitors = results[1] || [];
@@ -290,7 +290,7 @@ function syncDatabaseData(silent) {
     return Boolean(changed);
   }).catch(function(err) {
     if (!silent) showToast('Database sync failed. Local data is still available.', 'error');
-    if (window.console && console.warn) console.warn('[EcolineDB] sync failed:', err);
+    if (window.console && console.warn) console.warn('[ModformDB] sync failed:', err);
     return false;
   });
 }
@@ -381,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   /* ── Theme ── */
   var savedTheme = 'dark';
-  try { savedTheme = localStorage.getItem('arshristika-theme') || 'dark'; } catch(e) {}
+  try { savedTheme = localStorage.getItem('modform-theme') || 'dark'; } catch(e) {}
   document.documentElement.setAttribute('data-theme', savedTheme);
 
   var themeBtn = $('themeToggleDash');
@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var cur = document.documentElement.getAttribute('data-theme');
       var next = cur === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
-      try { localStorage.setItem('arshristika-theme', next); } catch(e) {}
+      try { localStorage.setItem('modform-theme', next); } catch(e) {}
     });
   }
 
@@ -834,8 +834,8 @@ function cycleStatus(id) {
     if (leads[i].id === id) {
       var idx = CYCLE.indexOf(leads[i].status || 'new');
       leads[i].status = CYCLE[(idx + 1) % CYCLE.length];
-      if (window.EcolineDB && window.EcolineDB.enabled) {
-        window.EcolineDB.updateLeadStatus(id, leads[i].status);
+      if (window.ModformDB && window.ModformDB.enabled) {
+        window.ModformDB.updateLeadStatus(id, leads[i].status);
       }
       break;
     }
@@ -849,7 +849,7 @@ function cycleStatus(id) {
 function deleteLead(id) {
   showConfirm('Delete this lead?', function() {
     saveLeads(getLeads().filter(function(l) { return l.id !== id; }));
-    if (window.EcolineDB && window.EcolineDB.enabled) window.EcolineDB.deleteLead(id);
+    if (window.ModformDB && window.ModformDB.enabled) window.ModformDB.deleteLead(id);
     var lf = $('leadsFilter');
     renderLeadsPanel(lf ? lf.value : 'all');
     renderOverview();
@@ -978,7 +978,7 @@ function exportCSV() {
   var url  = URL.createObjectURL(blob);
   var a    = document.createElement('a');
   a.href     = url;
-  a.download = 'arshristika-leads-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.download = 'modform-leads-' + new Date().toISOString().slice(0,10) + '.csv';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);

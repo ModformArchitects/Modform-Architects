@@ -1,5 +1,5 @@
 /* Shared project data for homepage lightbox and project detail pages. */
-window.ECOLINE_PROJECTS = [
+window.MODFORM_PROJECTS = [
   {
     name: 'Jal Villa',
     slug: 'jal-villa',

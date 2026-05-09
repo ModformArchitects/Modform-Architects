@@ -1,4 +1,4 @@
-# Ar.Shristika — Complete Setup Guide
+# Modform Architects — Complete Setup Guide
 
 ---
 
@@ -37,7 +37,7 @@
 4. Click **Connect Account**
 5. A Google popup appears → select `aryansharma73095@gmail.com`
 6. Allow the permissions
-7. Name it: `ArShristika_Gmail` (anything you like)
+7. Name it: `ModformArchitects_Gmail` (anything you like)
 8. Click **Create Service**
 9. ✅ **Copy the Service ID** (shown below the service name, e.g. `service_k3p9abc`)
 
@@ -56,7 +56,7 @@ aryansharma73095@gmail.com
 
 **Subject field:**
 ```
-🚨 Login Alert — Ar.Shristika Admin Portal
+🚨 Login Alert — Modform Architects Admin Portal
 ```
 
 **Message body** — click the `< >` (HTML) toggle button, then paste:
@@ -64,7 +64,7 @@ aryansharma73095@gmail.com
 ```html
 <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:24px;background:#f7f4ef;border-radius:8px">
   <h2 style="color:#c8a96e;margin:0 0 4px">⚠️ Security Alert</h2>
-  <p style="color:#6b6560;margin:0 0 20px;font-size:13px">Ar.Shristika Admin Portal</p>
+  <p style="color:#6b6560;margin:0 0 20px;font-size:13px">Modform Architects Admin Portal</p>
   <p style="background:#fff;padding:16px;border-radius:6px;border-left:3px solid #e07050;color:#1a1916">
     Someone made <strong>5 failed login attempts</strong> on your admin portal and has been temporarily locked out.
   </p>
@@ -102,7 +102,7 @@ aryansharma73095@gmail.com
     If this was you testing the login, ignore this email.<br/>
     If it wasn't you, consider changing your admin password.
   </p>
-  <p style="margin-top:16px;font-size:11px;color:#b8b0a4">— Ar.Shristika Admin Security System</p>
+  <p style="margin-top:16px;font-size:11px;color:#b8b0a4">— Modform Architects Admin Security System</p>
 </div>
 ```
 
@@ -147,7 +147,7 @@ var EMAILJS_TEMPLATE_ID = 'template_m7xabc';      // ← Template ID
 
 **What it does:** Puts your website live on the internet for free.
 **Cost:** Free forever for public repos
-**Your site URL will be:** `https://YOUR-USERNAME.github.io/arshristika/`
+**Your site URL will be:** `https://YOUR-USERNAME.github.io/modform/`
 **Time:** ~10 minutes
 
 ---
@@ -167,7 +167,7 @@ If not, download from **https://git-scm.com/download/mac** and install.
 
 1. Go to **https://github.com**
 2. Click **Sign Up**
-3. Choose a username (e.g. `arshristika` or your name)
+3. Choose a username (e.g. `modform` or your name)
 4. Use any email
 5. Verify your account
 
@@ -177,7 +177,7 @@ If not, download from **https://git-scm.com/download/mac** and install.
 
 1. After login, click the **+** icon (top right) → **New repository**
 2. Fill in:
-   - **Repository name:** `arshristika` (this becomes part of your URL)
+   - **Repository name:** `modform` (this becomes part of your URL)
    - **Description:** `Architecture & Design Studio Portfolio`
    - **Visibility:** ✅ Public (required for free hosting)
    - ❌ Do NOT check "Add a README file"
@@ -205,13 +205,13 @@ git init
 git add index.html style.css main.js admin.html admin.css admin.js .gitignore
 
 # Create your first commit
-git commit -m "Launch: Ar.Shristika portfolio website"
+git commit -m "Launch: Modform Architects portfolio website"
 
 # Set the branch name to main
 git branch -M main
 
 # Connect to your GitHub repo (replace YOUR-USERNAME with your GitHub username)
-git remote add origin https://github.com/YOUR-USERNAME/arshristika.git
+git remote add origin https://github.com/YOUR-USERNAME/modform.git
 
 # Push files to GitHub
 git push -u origin main
@@ -232,7 +232,7 @@ When prompted, enter your GitHub username and password.
 5. Branch: **main** | Folder: **/ (root)**
 6. Click **Save**
 7. Wait 2–3 minutes
-8. Refresh the page — you'll see: **"Your site is live at https://YOUR-USERNAME.github.io/arshristika/"** ✅
+8. Refresh the page — you'll see: **"Your site is live at https://YOUR-USERNAME.github.io/modform/"** ✅
 
 ---
 
@@ -266,7 +266,7 @@ Your live site updates automatically within 1–2 minutes.
 1. Go to **https://console.firebase.google.com**
 2. Sign in with your Google account
 3. Click **Create a project**
-4. Name: `arshristika-admin`
+4. Name: `modform-admin`
 5. Disable Google Analytics (not needed)
 6. Click **Create project** → wait ~30 seconds → **Continue**
 
@@ -298,7 +298,7 @@ Your live site updates automatically within 1–2 minutes.
 1. Click the ⚙️ gear icon → **Project Settings**
 2. Scroll to **Your apps** section
 3. Click the `</>` Web icon
-4. App nickname: `arshristika-web`
+4. App nickname: `modform-web`
 5. ❌ Don't enable Firebase Hosting
 6. Click **Register app**
 7. You'll see a code block like this — **copy the firebaseConfig object:**
@@ -306,9 +306,9 @@ Your live site updates automatically within 1–2 minutes.
 ```js
 const firebaseConfig = {
   apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-  authDomain: "arshristika-admin.firebaseapp.com",
-  projectId: "arshristika-admin",
-  storageBucket: "arshristika-admin.appspot.com",
+  authDomain: "modform-admin.firebaseapp.com",
+  projectId: "modform-admin",
+  storageBucket: "modform-admin.appspot.com",
   messagingSenderId: "123456789012",
   appId: "1:123456789012:web:abcdef1234567890"
 };
@@ -416,7 +416,7 @@ auth.onAuthStateChanged(function(user) {
 3. Click **New Project**
 4. Fill in:
    - Organisation: your name
-   - Project name: `arshristika`
+   - Project name: `modform`
    - Database password: create a strong password (save it somewhere)
    - Region: **Southeast Asia (Singapore)** — closest to Mumbai
 5. Click **Create new project** → wait ~2 minutes
@@ -514,7 +514,7 @@ supabase.auth.getSession().then(({ data: { session } }) => {
 
 1. On Netlify dashboard → click **Add new site** → **Import an existing project**
 2. Choose **Deploy with GitHub**
-3. Authorise and select your `arshristika` repository
+3. Authorise and select your `modform` repository
 4. Settings:
    - Branch to deploy: `main`
    - Build command: *(leave empty)*
@@ -527,7 +527,7 @@ supabase.auth.getSession().then(({ data: { session } }) => {
 ### Step 5.3 — Set a Custom Subdomain (Free)
 
 1. Site settings → **Domain management** → **Options** → **Edit site name**
-2. Change to: `arshristika` → saves as `arshristika.netlify.app`
+2. Change to: `modform` → saves as `modform.netlify.app`
 
 ---
 
@@ -638,9 +638,9 @@ When ready to upgrade
 | Admin Username | admin |
 | Admin Password | Admin@123 |
 | Alert Email | aryansharma73095@gmail.com |
-| GitHub Repo | github.com/YOUR-USERNAME/arshristika |
-| Live URL (GitHub) | YOUR-USERNAME.github.io/arshristika |
-| Live URL (Netlify) | arshristika.netlify.app |
+| GitHub Repo | github.com/YOUR-USERNAME/modform |
+| Live URL (GitHub) | YOUR-USERNAME.github.io/modform |
+| Live URL (Netlify) | modform.netlify.app |
 
 ---
 
