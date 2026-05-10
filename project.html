@@ -284,7 +284,7 @@
       <div class="footer-top">
         <div class="footer-brand">
           <a class="footer-logo" href="index.html">Modform<em>Architects</em></a>
-          <p class="footer-tagline">Architecture & Design Studio<br />Mumbai · Jaipur · Bengaluru · India</p>
+          <p class="footer-tagline">Designed with intention. Built for the future.<br />Modform Architects · Lucknow, India</p>
         </div>
         <nav class="footer-nav">
           <div class="footer-nav-col">
@@ -382,7 +382,7 @@
     heroImg.height = heroSize[1];
     document.getElementById('projCat').textContent = p.category;
     document.getElementById('projTitle').textContent = p.name;
-    document.getElementById('projLoc').textContent = p.location + ' · ' + p.year;
+    document.getElementById('projLoc').textContent = (p.location ? p.location + ' · ' : '') + p.year;
     document.getElementById('projBrief').textContent = p.desc;
 
     setTimeout(function() { heroEl.classList.add('loaded'); }, 100);
@@ -393,7 +393,7 @@
       ['Area',     p.area],
       ['Category', p.category],
       ['Status',   p.status],
-    ];
+    ].filter(function(f) { return f[1]; });
     document.getElementById('projMeta').innerHTML = metaFields.map(function(f) {
       return '<div class="proj-meta-item">'
         + '<span class="proj-meta-label">' + f[0] + '</span>'
@@ -421,7 +421,7 @@
         +   '<span class="proj-rel-name">' + rp.name + '</span>'
         +   '<span class="proj-rel-arrow">↗</span>'
         + '</div>'
-        + '<p class="proj-rel-sub">' + rp.category + ' · ' + rp.location + '</p>'
+        + '<p class="proj-rel-sub">' + rp.category + (rp.location ? ' · ' + rp.location : '') + '</p>'
         + '</a>';
     }).join('');
   })();

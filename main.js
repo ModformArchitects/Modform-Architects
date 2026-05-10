@@ -411,10 +411,10 @@ document.addEventListener('DOMContentLoaded', initReveal);
           <p class="lb-eyebrow">${p.category}</p>
           <h2 class="lb-title">${p.name}</h2>
           <div class="lb-meta">
-            <div class="lb-meta-item"><span class="lb-meta-label">Location</span><span class="lb-meta-val">${p.location}</span></div>
-            <div class="lb-meta-item"><span class="lb-meta-label">Year</span><span class="lb-meta-val">${p.year}</span></div>
-            <div class="lb-meta-item"><span class="lb-meta-label">Area</span><span class="lb-meta-val">${p.area}</span></div>
-            <div class="lb-meta-item"><span class="lb-meta-label">Status</span><span class="lb-meta-val">${p.status}</span></div>
+            ${[['Location', p.location], ['Year', p.year], ['Area', p.area], ['Status', p.status]]
+              .filter(([, v]) => v)
+              .map(([label, value]) => `<div class="lb-meta-item"><span class="lb-meta-label">${label}</span><span class="lb-meta-val">${value}</span></div>`)
+              .join('')}
           </div>
           <p class="lb-desc">${p.desc}</p>
         </div>
