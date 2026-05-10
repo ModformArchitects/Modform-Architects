@@ -121,7 +121,7 @@ No database. Everything lives in the browser's **localStorage**.
 | **How We Work section**  | 4-step process: Listen → Vastu → Documentation → Build             |
 | **Awards section**       | 18 real awards in a responsive grid                                |
 | **Project detail pages** | `project.html?id=0–5` — full case study, image gallery, related projects |
-| **Custom favicon**       | SVG `Ar.S` monogram, gold on dark                                  |
+| **Custom favicon**       | SVG `MF` geometric monogram, gold on dark                          |
 | Contact form             | Saves to `ars_leads` + sends email via EmailJS (when configured)   |
 | Visitor tracking         | Auto-logs each visit to `ars_visitors`                             |
 | **PDF download**         | "Download Studio Profile" button in About — needs `studio-profile.pdf` |
