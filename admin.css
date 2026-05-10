@@ -130,6 +130,15 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
 }
 .login-brand em { font-style: normal; color: var(--accent-2); }
 
+.login-logo {
+  display: block;
+  width: 180px;
+  height: auto;
+  margin: 0 0 1.5rem;
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
 .login-title {
   font-family: var(--serif);
   font-size: clamp(1.4rem,3vw,1.9rem);
