@@ -1152,3 +1152,35 @@ if (typeof Lenis === 'undefined') {
 
   imgs.forEach(img => obs.observe(img));
 })();
+
+/* ══════════════════════════════════════════════════════════
+   SECRET ADMIN ENTRY — five rapid clicks on the founder
+   portrait opens admin.html. Visible only to people who know.
+   ══════════════════════════════════════════════════════════ */
+(function initSecretAdminEntry() {
+  var target = document.getElementById('principalPortrait');
+  if (!target) return;
+
+  var REQUIRED_CLICKS = 5;
+  var WINDOW_MS       = 3000;
+  var count           = 0;
+  var firstClickAt    = 0;
+
+  target.style.cursor = 'pointer';
+  target.setAttribute('role', 'img');
+
+  target.addEventListener('click', function() {
+    var now = Date.now();
+    if (now - firstClickAt > WINDOW_MS) {
+      count = 1;
+      firstClickAt = now;
+      return;
+    }
+    count += 1;
+    if (count >= REQUIRED_CLICKS) {
+      count = 0;
+      firstClickAt = 0;
+      window.location.href = 'admin.html';
+    }
+  });
+})();
