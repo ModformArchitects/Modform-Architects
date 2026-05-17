@@ -166,8 +166,8 @@ function getEmailJsCfg() {
 function getStudioCfg() {
   try {
     var s = JSON.parse(localStorage.getItem(STUDIO_CFG_KEY) || '{}');
-    return { email: s.email || 'shrishtikapal6@gmail.com', phone: s.phone || '919452861841' };
-  } catch(e) { return { email: 'shrishtikapal6@gmail.com', phone: '919452861841' }; }
+    return { email: s.email || 'modformarchitects@gmail.com', phone: s.phone || '919452861841' };
+  } catch(e) { return { email: 'modformarchitects@gmail.com', phone: '919452861841' }; }
 }
 
 /* ═══════════════════════════════════════════════════════════

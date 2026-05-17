@@ -37,7 +37,7 @@ Live site: <https://modformarchitecs.com>
 
 | Field    | Value                       |
 | -------- | --------------------------- |
-| Email    | shrishtikapal6@gmail.com    |
+| Email    | modformarchitects@gmail.com    |
 | Phone    | +91 94528 61841             |
 | WhatsApp | +91 94528 61841             |
 
@@ -196,7 +196,7 @@ Browser support: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+.
 
 | What         | Value                       |
 | ------------ | --------------------------- |
-| Studio email | shrishtikapal6@gmail.com    |
+| Studio email | modformarchitects@gmail.com    |
 | Studio phone | +91 94528 61841             |
 | Site URL     | https://modformarchitecs.com |
 

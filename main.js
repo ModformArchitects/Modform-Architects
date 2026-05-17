@@ -533,7 +533,7 @@ var FORM_TEMPLATE_ID = '';   // new template e.g. 'template_contact'
         project_type: lead.project,
         message:      lead.message,
         reply_to:     lead.email,
-        to_email:     'shrishtikapal6@gmail.com',
+        to_email:     'modformarchitects@gmail.com',
       }).then(onSuccess, onError);
     } else {
       setTimeout(onSuccess, 900);
