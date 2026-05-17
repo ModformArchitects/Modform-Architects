@@ -28,8 +28,8 @@
 
       <form class="login-form" id="loginForm" novalidate>
         <div class="lf-group">
-          <input type="text" id="lfUser" placeholder=" " autocomplete="username" />
-          <label for="lfUser">Username</label>
+          <input type="email" id="lfUser" placeholder=" " autocomplete="username" inputmode="email" />
+          <label for="lfUser">Email</label>
         </div>
         <div class="lf-group">
           <input type="password" id="lfPass" placeholder=" " autocomplete="current-password" />
@@ -39,7 +39,7 @@
         <button type="submit" class="login-btn">Sign In</button>
       </form>
 
-      <p class="login-hint">Contact the studio administrator for access credentials.</p>
+      <p class="login-hint">Sign in with your Supabase admin email. Contact the studio administrator if you need access.</p>
     </div>
   </div>
 
@@ -572,10 +572,10 @@
           <!-- Change password -->
           <div class="settings-card">
             <h3 class="settings-card-title">Change Admin Password</h3>
-            <p class="settings-desc">Updates the password stored in your browser. The new hash is also shown so you can update <code>admin.js</code> for permanent use.</p>
+            <p class="settings-desc">Updates your Supabase Auth password. Stored server-side as a bcrypt hash — it is not kept in this browser or in the source code.</p>
             <div class="sf-group">
               <label>New Password</label>
-              <input type="password" id="newPass" placeholder="Enter new password" />
+              <input type="password" id="newPass" placeholder="At least 8 characters" />
             </div>
             <div class="sf-group">
               <label>Confirm Password</label>
@@ -583,11 +583,7 @@
             </div>
             <button class="action-btn" id="changePassBtn">Update Password</button>
             <div class="settings-feedback" id="passFeedback"></div>
-            <div class="hash-display" id="hashDisplay" style="display:none">
-              <p class="hash-label">New hash for <code>admin.js</code> line 9:</p>
-              <code class="hash-val" id="hashVal"></code>
-              <button class="action-btn outline" id="copyHashBtn">Copy Hash</button>
-            </div>
+            <div class="hash-display" id="hashDisplay" style="display:none"></div>
           </div>
 
           <!-- EmailJS config -->

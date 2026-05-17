@@ -4,10 +4,9 @@
 
 'use strict';
 
-/* Credentials stored as SHA-256 hash — plain password never lives in source.
-   Hash = SHA-256("admin:studio2024"). Change password by updating this hash. */
-var ADMIN_HASH   = 'c8aa900c8f62fddbdddfc8e273f954915587431e4cb8f81b68a4c0829ad5b608';
-var AUTH_KEY     = 'ars_admin_auth';
+/* Authentication is handled by Supabase Auth (see database.js).
+   The admin password is hashed server-side by Supabase (bcrypt) and never
+   reaches the browser as plaintext or hash — there is nothing to inspect. */
 var LEADS_KEY    = 'ars_leads';
 var VISITORS_KEY = 'ars_visitors';
 var LOCKOUT_KEY  = 'ars_lockout';
@@ -149,15 +148,11 @@ function sendAlertEmail(geo) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   HASH OVERRIDE — allows password change from Settings UI
+   LOCAL CONFIG KEYS (non-auth)
    ═══════════════════════════════════════════════════════════ */
-var ADMIN_HASH_KEY    = 'ars_admin_hash';
 var EMAILJS_CFG_KEY   = 'ars_emailjs_cfg';
 var STUDIO_CFG_KEY    = 'ars_studio_cfg';
 
-function getAdminHash() {
-  return localStorage.getItem(ADMIN_HASH_KEY) || ADMIN_HASH;
-}
 function getEmailJsCfg() {
   try {
     var s = JSON.parse(localStorage.getItem(EMAILJS_CFG_KEY) || '{}');
@@ -347,16 +342,15 @@ function countBy(arr, key) {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   AUTH
+   AUTH — backed by Supabase Auth (see database.js)
    ═══════════════════════════════════════════════════════════ */
 function isLoggedIn() {
-  try { return sessionStorage.getItem(AUTH_KEY) === '1'; } catch(e) { return false; }
-}
-function setLoggedIn() {
-  try { sessionStorage.setItem(AUTH_KEY, '1'); } catch(e) {}
+  return Boolean(window.ModformDB && window.ModformDB.isAuthenticated && window.ModformDB.isAuthenticated());
 }
 function clearAuth() {
-  try { sessionStorage.removeItem(AUTH_KEY); } catch(e) {}
+  if (window.ModformDB && window.ModformDB.signOutAdmin) {
+    window.ModformDB.signOutAdmin();
+  }
 }
 
 function showDashboard() {
@@ -403,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var passEl  = $('lfPass');
       var errEl   = $('loginError');
       var btnEl   = loginForm.querySelector('.login-btn');
-      var user    = userEl ? userEl.value.trim() : '';
+      var email   = userEl ? userEl.value.trim() : '';
       var pass    = passEl ? passEl.value : '';
 
       /* ── Lockout check ── */
@@ -414,21 +408,27 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
 
-      /* ── Disable button during async hash ── */
+      if (!email || !pass) {
+        if (errEl) errEl.textContent = 'Enter your email and password.';
+        return;
+      }
+      if (!window.ModformDB || !window.ModformDB.signInAdmin) {
+        if (errEl) errEl.textContent = 'Auth service unavailable. Check your connection.';
+        return;
+      }
+
       if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Verifying…'; }
 
-      sha256(user + ':' + pass).then(function(hash) {
-        if (hash === getAdminHash()) {
-          clearLockout();
-          setLoggedIn();
-          if (errEl) errEl.textContent = '';
-          showDashboard();
-        } else {
-          recordFailedAttempt(errEl);
-          if (passEl) { passEl.value = ''; passEl.focus(); }
+      window.ModformDB.signInAdmin(email, pass).then(function() {
+        clearLockout();
+        if (errEl) errEl.textContent = '';
+        showDashboard();
+      }).catch(function(err) {
+        recordFailedAttempt(errEl);
+        if (errEl && err && err.message && !errEl.textContent.indexOf('Too many')) {
+          /* keep lockout message if present, otherwise show server error */
         }
-      }).catch(function() {
-        if (errEl) errEl.textContent = 'Verification error. Please try again.';
+        if (passEl) { passEl.value = ''; passEl.focus(); }
       }).finally(function() {
         if (btnEl) { btnEl.disabled = false; btnEl.textContent = 'Sign In'; }
       });
@@ -1262,7 +1262,7 @@ function renderSettingsPanel() {
 }
 
 function initSettingsPanel() {
-  /* Change password */
+  /* Change password — updates the Supabase Auth user (server-side, bcrypt) */
   var changePassBtn = $('changePassBtn');
   if (changePassBtn) {
     changePassBtn.addEventListener('click', function() {
@@ -1270,33 +1270,33 @@ function initSettingsPanel() {
       var cp = ($('confirmPass') || {}).value || '';
       var fb = $('passFeedback');
       var hd = $('hashDisplay');
-      var hv = $('hashVal');
 
       if (!np) { if (fb) { fb.textContent = 'Enter a new password.'; fb.className = 'settings-feedback error'; } return; }
       if (np !== cp) { if (fb) { fb.textContent = 'Passwords do not match.'; fb.className = 'settings-feedback error'; } return; }
-      if (np.length < 6) { if (fb) { fb.textContent = 'Password must be at least 6 characters.'; fb.className = 'settings-feedback error'; } return; }
+      if (np.length < 8) { if (fb) { fb.textContent = 'Password must be at least 8 characters.'; fb.className = 'settings-feedback error'; } return; }
+      if (!window.ModformDB || !window.ModformDB.updatePassword) {
+        if (fb) { fb.textContent = 'Auth service unavailable.'; fb.className = 'settings-feedback error'; }
+        return;
+      }
 
-      sha256('admin:' + np).then(function(hash) {
-        try { localStorage.setItem(ADMIN_HASH_KEY, hash); } catch(e) {}
-        if (fb) { fb.textContent = '✓ Password updated (active in this browser).'; fb.className = 'settings-feedback success'; }
-        if (hd) hd.style.display = '';
-        if (hv) hv.textContent = hash;
+      changePassBtn.disabled = true;
+      var oldLabel = changePassBtn.textContent;
+      changePassBtn.textContent = 'Updating…';
+
+      window.ModformDB.updatePassword(np).then(function() {
+        if (fb) { fb.textContent = '✓ Password updated. It is active everywhere.'; fb.className = 'settings-feedback success'; }
+        if (hd) hd.style.display = 'none';
         if ($('newPass')) $('newPass').value = '';
         if ($('confirmPass')) $('confirmPass').value = '';
         showToast('Password changed successfully.', 'success');
+      }).catch(function(err) {
+        var msg = (err && err.message) ? err.message : 'Could not update password.';
+        if (fb) { fb.textContent = msg; fb.className = 'settings-feedback error'; }
+        showToast('Password change failed.', 'error');
+      }).finally(function() {
+        changePassBtn.disabled = false;
+        changePassBtn.textContent = oldLabel;
       });
-    });
-  }
-
-  /* Copy hash */
-  var copyHashBtn = $('copyHashBtn');
-  if (copyHashBtn) {
-    copyHashBtn.addEventListener('click', function() {
-      var hv = $('hashVal');
-      if (!hv) return;
-      navigator.clipboard && navigator.clipboard.writeText(hv.textContent)
-        .then(function() { showToast('Hash copied to clipboard.', 'success'); })
-        .catch(function() { showToast('Select the hash text and copy manually.', 'info'); });
     });
   }
 
@@ -1358,7 +1358,7 @@ function initSettingsPanel() {
   if (dangerReset) {
     dangerReset.addEventListener('click', function() {
       showConfirm('Reset EVERYTHING? This deletes all leads, visitors, campaigns, and settings. Cannot be undone.', function() {
-        var keys = [LEADS_KEY, VISITORS_KEY, LOCKOUT_KEY, AUTH_KEY, ADMIN_HASH_KEY, EMAILJS_CFG_KEY, STUDIO_CFG_KEY, 'ars_ad_campaigns'];
+        var keys = [LEADS_KEY, VISITORS_KEY, LOCKOUT_KEY, EMAILJS_CFG_KEY, STUDIO_CFG_KEY, 'ars_ad_campaigns'];
         keys.forEach(function(k) { try { localStorage.removeItem(k); } catch(e) {} });
         showToast('Dashboard reset. Logging out…', 'info');
         setTimeout(function() { clearAuth(); showLogin(); }, 1800);

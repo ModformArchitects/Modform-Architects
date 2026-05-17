@@ -1,5 +1,10 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /SUPABASE_SETUP.sql
+Disallow: /SETUP_GUIDE.md
+Disallow: /EMAILJS_SETUP.md
+Disallow: /DATABASE_SETUP.md
+Disallow: /README.md
 
-Sitemap: https://YOURSITE.com/sitemap.xml
+Sitemap: https://modformarchitects.com/sitemap.xml

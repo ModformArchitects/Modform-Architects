@@ -1,6 +1,15 @@
--- Modform Architects database setup for Supabase
--- Run this in Supabase SQL Editor, then paste your project URL and anon key
--- into database.js.
+-- ════════════════════════════════════════════════════════════
+-- Modform Architects — Supabase database + RLS setup
+-- Run this in your Supabase project's SQL Editor.
+--
+-- Security model:
+--   anon         → INSERT only (public website forms)
+--   authenticated → SELECT / UPDATE / DELETE on leads + SELECT on visitors
+--                  (admin dashboard, after signing in via Supabase Auth)
+--
+-- After running this SQL, also do the one-time steps listed in
+-- README.md → "Create the admin user".
+-- ════════════════════════════════════════════════════════════
 
 create table if not exists public.leads (
   id bigint primary key,
@@ -40,24 +49,30 @@ create table if not exists public.customer_profiles (
   created_at timestamptz default now()
 );
 
-alter table public.leads enable row level security;
-alter table public.visitors enable row level security;
+alter table public.leads             enable row level security;
+alter table public.visitors          enable row level security;
 alter table public.customer_profiles enable row level security;
 
-alter table public.visitors add column if not exists city text;
-alter table public.visitors add column if not exists region text;
+alter table public.visitors add column if not exists city    text;
+alter table public.visitors add column if not exists region  text;
 alter table public.visitors add column if not exists country text;
-alter table public.visitors add column if not exists ip text;
+alter table public.visitors add column if not exists ip      text;
 
-drop policy if exists "public insert leads" on public.leads;
-drop policy if exists "public insert visitors" on public.visitors;
+-- ── Drop legacy permissive policies (re-runnable) ──
+drop policy if exists "public insert leads"             on public.leads;
+drop policy if exists "public insert visitors"          on public.visitors;
 drop policy if exists "public insert customer profiles" on public.customer_profiles;
-drop policy if exists "static admin read leads" on public.leads;
-drop policy if exists "static admin read visitors" on public.visitors;
-drop policy if exists "static admin update leads" on public.leads;
-drop policy if exists "static admin delete leads" on public.leads;
+drop policy if exists "static admin read leads"         on public.leads;
+drop policy if exists "static admin read visitors"      on public.visitors;
+drop policy if exists "static admin update leads"       on public.leads;
+drop policy if exists "static admin delete leads"       on public.leads;
+drop policy if exists "admin read leads"                on public.leads;
+drop policy if exists "admin read visitors"             on public.visitors;
+drop policy if exists "admin update leads"              on public.leads;
+drop policy if exists "admin delete leads"              on public.leads;
+drop policy if exists "admin read customer profiles"    on public.customer_profiles;
 
--- Public website forms need insert access.
+-- ── PUBLIC: anon role can only INSERT (forms on the website) ──
 create policy "public insert leads"
 on public.leads for insert
 to anon
@@ -73,27 +88,34 @@ on public.customer_profiles for insert
 to anon
 with check (true);
 
--- The current admin page is static, so it reads with the anon key.
--- For production, move admin reads behind a server/edge function before launch.
-create policy "static admin read leads"
+-- ── ADMIN: only authenticated users can read/modify ──
+-- The admin dashboard signs in via Supabase Auth and uses the JWT
+-- in the Authorization header.  Anyone without a valid JWT (i.e.,
+-- a random visitor with just the anon key) cannot read or modify
+-- any of this data.
+
+create policy "admin read leads"
 on public.leads for select
-to anon
+to authenticated
 using (true);
 
-create policy "static admin read visitors"
-on public.visitors for select
-to anon
-using (true);
-
--- Static admin status/delete actions. For production, replace these with
--- authenticated server-side admin actions or Supabase Edge Functions.
-create policy "static admin update leads"
+create policy "admin update leads"
 on public.leads for update
-to anon
+to authenticated
 using (true)
 with check (true);
 
-create policy "static admin delete leads"
+create policy "admin delete leads"
 on public.leads for delete
-to anon
+to authenticated
+using (true);
+
+create policy "admin read visitors"
+on public.visitors for select
+to authenticated
+using (true);
+
+create policy "admin read customer profiles"
+on public.customer_profiles for select
+to authenticated
 using (true);
