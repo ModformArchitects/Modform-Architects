@@ -15,10 +15,10 @@ var LOCKOUT_KEY  = 'ars_lockout';
    Fill these in after setting up EmailJS (see README below).
    Leave blank to disable email alerts.
    ─────────────────────────────────────────────────────────── */
-var EMAILJS_PUBLIC_KEY  = '';          // e.g. 'user_xxxxxxxxxxxxxxx'
-var EMAILJS_SERVICE_ID  = '';          // e.g. 'service_xxxxxxx'
-var EMAILJS_TEMPLATE_ID = '';          // e.g. 'template_xxxxxxx'
-var ALERT_EMAIL         = 'aryansharma73095@gmail.com';
+var EMAILJS_PUBLIC_KEY  = 'A9UB50GFYH9GWqzop';
+var EMAILJS_SERVICE_ID  = 'service_pgo5n2q';
+var EMAILJS_TEMPLATE_ID = 'template_6tnhoxv';
+var ALERT_EMAIL         = 'modformarchitects@gmail.com';
 
 var DEMO_LEADS = [
   { id: 1700000001000, ts: new Date(Date.now() - 1 * 864e5).toISOString(), source: 'website_form', status: 'new',       name: 'Arjun Mehta',   email: 'arjun.mehta@gmail.com',      phone: '+91 98765 43210', project: 'Architectural Design',  message: 'Looking for a 3BHK villa design in Lonavala. Budget approx 2Cr.' },
@@ -378,6 +378,12 @@ document.addEventListener('DOMContentLoaded', function() {
   try { savedTheme = localStorage.getItem('modform-theme') || 'dark'; } catch(e) {}
   document.documentElement.setAttribute('data-theme', savedTheme);
 
+  function syncThemeColor(theme) {
+    var meta = document.getElementById('metaThemeColorAdmin');
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0d0d0b' : '#f7f4ef');
+  }
+  syncThemeColor(savedTheme);
+
   var themeBtn = $('themeToggleDash');
   if (themeBtn) {
     themeBtn.addEventListener('click', function() {
@@ -385,6 +391,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var next = cur === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       try { localStorage.setItem('modform-theme', next); } catch(e) {}
+      syncThemeColor(next);
     });
   }
 
@@ -448,20 +455,42 @@ document.addEventListener('DOMContentLoaded', function() {
   if (isLoggedIn()) { showDashboard(); } else { showLogin(); }
 
   /* ── Sidebar toggle (mobile) ── */
-  var sidebar  = $('sidebar');
-  var sbToggle = $('sbToggle');
+  var sidebar   = $('sidebar');
+  var sbToggle  = $('sbToggle');
+  var sbBackdrop = $('sbBackdrop');
+
+  function openSidebar() {
+    if (!sidebar) return;
+    sidebar.classList.add('open');
+    if (sbBackdrop) sbBackdrop.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    if (!sidebar) return;
+    sidebar.classList.remove('open');
+    if (sbBackdrop) sbBackdrop.classList.remove('show');
+    document.body.style.overflow = '';
+  }
   if (sbToggle && sidebar) {
-    sbToggle.addEventListener('click', function() {
-      sidebar.classList.toggle('open');
+    sbToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
     });
+    if (sbBackdrop) sbBackdrop.addEventListener('click', closeSidebar);
     document.addEventListener('click', function(e) {
       if (sidebar.classList.contains('open') &&
           !sidebar.contains(e.target) &&
           !sbToggle.contains(e.target)) {
-        sidebar.classList.remove('open');
+        closeSidebar();
       }
     });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && sidebar.classList.contains('open')) closeSidebar();
+    });
   }
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) closeSidebar();
+  });
 
   /* ── Sidebar nav ── */
   document.querySelectorAll('.sb-link').forEach(function(btn) {
@@ -879,6 +908,7 @@ function openLeadModal(id) {
     + '<p class="modal-label">Phone / WhatsApp</p><p class="modal-val">'
       + (lead.phone ? '<a href="tel:' + esc(lead.phone) + '" style="color:var(--muted)">' + esc(lead.phone) + '</a>' : '—') + '</p>'
     + '<p class="modal-label">Service Requested</p><p class="modal-val">' + esc(lead.project || '—') + '</p>'
+    + (lead.timeline ? '<p class="modal-label">Timeline</p><p class="modal-val">' + esc(lead.timeline) + '</p>' : '')
     + '<p class="modal-label">Source</p><p class="modal-val">' + esc(sourceLabel(lead.source)) + '</p>'
     + '<p class="modal-label">Submitted</p><p class="modal-val">' + fmtDate(lead.ts) + '</p>'
     + '<p class="modal-label">Message</p><div class="modal-msg">' + esc(lead.message || '—') + '</div>'

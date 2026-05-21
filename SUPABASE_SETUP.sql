@@ -58,6 +58,9 @@ alter table public.visitors add column if not exists region  text;
 alter table public.visitors add column if not exists country text;
 alter table public.visitors add column if not exists ip      text;
 
+-- Chatbot timeline qualification (Jan 2026)
+alter table public.leads add column if not exists timeline text;
+
 -- ── Drop legacy permissive policies (re-runnable) ──
 drop policy if exists "public insert leads"             on public.leads;
 drop policy if exists "public insert visitors"          on public.visitors;

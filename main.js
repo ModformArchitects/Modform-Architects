@@ -745,7 +745,7 @@ if (typeof Lenis === 'undefined') {
   let lead    = freshLead();
 
   function freshLead() {
-    return { intent: '', name: '', phone: '', email: '', service: '', project: '' };
+    return { intent: '', name: '', phone: '', email: '', service: '', timeline: '', project: '' };
   }
 
   function escText(str) {
@@ -896,7 +896,7 @@ if (typeof Lenis === 'undefined') {
   async function startFlow() {
     step = 'menu';
     setInput(false);
-    await botSay('Hi, I am the <strong>Studio Assistant</strong>. What would you like to do?', 120);
+    await botSay("Hi 👋 I'm the studio's assistant. Tell me what you're after and I'll connect you with the right person.", 120);
     showMainMenu();
   }
 
@@ -904,18 +904,18 @@ if (typeof Lenis === 'undefined') {
     step = 'menu';
     setInput(false);
     showOptions([
-      { label: 'Share project brief', value: 'brief', tone: 'primary' },
-      { label: 'Book a consultation', value: 'consultation' },
-      { label: 'See services', value: 'services' },
-      { label: 'WhatsApp directly', value: 'whatsapp' },
+      { label: 'Share a project brief', value: 'brief', tone: 'primary' },
+      { label: 'Book a free consultation', value: 'consultation' },
+      { label: 'See services & expertise', value: 'services' },
+      { label: 'Chat on WhatsApp instead', value: 'whatsapp' },
     ], handleIntent);
   }
 
   async function handleIntent(intent) {
     lead.intent = intent;
     if (intent === 'services') {
-      await botSay('We can help with <strong>Architectural Design</strong>, <strong>Interior Design</strong>, <strong>Vastu Consultation</strong>, sustainable planning, and turnkey execution.', 160);
-      await botSay('Would you like to share a quick brief so the studio can guide you better?', 160);
+      await botSay("We design <strong>homes, interiors, and commercial spaces</strong> — with Vastu integration on request, and full turnkey execution if needed.", 140);
+      await botSay("Want to share a quick brief so the studio can prepare something specific for you?", 160);
       showOptions([
         { label: 'Yes, share brief', value: 'brief', tone: 'primary' },
         { label: 'Back to menu', value: 'menu' },
@@ -927,14 +927,14 @@ if (typeof Lenis === 'undefined') {
     }
 
     if (intent === 'whatsapp') {
-      await botSay('Sure. You can message the studio directly on WhatsApp, or leave a short brief here first.', 160);
+      await botSay("Of course. You can ping the studio on WhatsApp directly, or leave a short brief here first — your call.", 160);
       showActionButtons();
       return;
     }
 
     if (intent === 'consultation') {
       lead.service = 'Consultation';
-      await botSay('Good choice. I will collect a few details so the team can prepare before calling you.', 160);
+      await botSay("Perfect. A few quick questions and the studio will reach out within 24 hours to set a time.", 160);
       askName();
       return;
     }
@@ -945,16 +945,31 @@ if (typeof Lenis === 'undefined') {
   async function askService() {
     step = 'service';
     setInput(false);
-    await botSay('Which service fits your requirement best?', 140);
+    await botSay('Which best describes what you need?', 140);
     showOptions([
       { label: 'Residential Design', value: 'Residential Design', tone: 'primary' },
       { label: 'Interior Design', value: 'Interior Design' },
       { label: 'Vastu Consultation', value: 'Vastu Consultation' },
       { label: 'Turnkey Execution', value: 'Turnkey Execution' },
       { label: 'Commercial / Office', value: 'Commercial / Office' },
-      { label: 'Not sure yet', value: 'Not sure yet' },
+      { label: 'Not sure yet — guide me', value: 'Not sure yet' },
     ], function(value) {
       lead.service = value;
+      askTimeline();
+    });
+  }
+
+  async function askTimeline() {
+    step = 'timeline';
+    setInput(false);
+    await botSay("When are you looking to start? (Helps us prioritise.)", 140);
+    showOptions([
+      { label: 'Already in progress', value: 'Already started', tone: 'primary' },
+      { label: 'Within 1–3 months', value: '1-3 months' },
+      { label: '3–6 months', value: '3-6 months' },
+      { label: 'Just exploring',   value: 'Exploring' },
+    ], function(value) {
+      lead.timeline = value;
       askProject();
     });
   }
@@ -962,22 +977,22 @@ if (typeof Lenis === 'undefined') {
   async function askProject() {
     step = 'project';
     setInput(false);
-    await botSay('Tell me a little about the project. Location, plot/flat size, timeline, or style references are enough.', 140);
-    setInput(true, 'e.g. 3BHK in Pune, 1500 sqft...');
+    await botSay("Tell me a bit about the project — location, plot/flat size, and any style references. Even a rough idea is fine.", 140);
+    setInput(true, 'e.g. 3BHK in Lucknow, ~1500 sqft, modern Indian feel');
   }
 
   async function askName() {
     step = 'name';
     setInput(false);
-    await botSay('May I have your name so the studio knows who this enquiry is from?', 120);
-    setInput(true, 'Enter your full name');
+    await botSay("Quick — what should I call you?", 120);
+    setInput(true, 'Your name');
   }
 
   async function askContact() {
     step = 'contact';
     setInput(false);
     const name = lead.name ? ', <strong>' + escText(lead.name.split(/\s+/)[0]) + '</strong>' : '';
-    await botSay('Thanks' + name + '. What is the best WhatsApp number or email for follow-up?', 120);
+    await botSay('Great' + name + '. Phone or WhatsApp number works best for a quick reply — what\'s yours? (Email also fine.)', 120);
     setInput(true, '+91 number or email');
   }
 
@@ -985,16 +1000,17 @@ if (typeof Lenis === 'undefined') {
     step = 'confirm';
     setInput(false);
     await botSay(
-      '<strong>Quick check:</strong><br>' +
-      'Name: ' + escText(lead.name || 'Not shared') + '<br>' +
-      'Service: ' + escText(lead.service || 'Not sure yet') + '<br>' +
-      'Brief: ' + escText(lead.project || 'Not shared') + '<br>' +
-      'Contact: ' + escText(lead.phone || lead.email || 'Not shared'),
+      '<strong>Quick check before I send this in:</strong><br>' +
+      '• Name: ' + escText(lead.name || 'Not shared') + '<br>' +
+      '• Service: ' + escText(lead.service || 'Not sure yet') + '<br>' +
+      (lead.timeline ? '• Timeline: ' + escText(lead.timeline) + '<br>' : '') +
+      '• Brief: ' + escText(lead.project || 'Not shared') + '<br>' +
+      '• Contact: ' + escText(lead.phone || lead.email || 'Not shared'),
       120
     );
     showOptions([
-      { label: 'Submit enquiry', value: 'submit', tone: 'primary' },
-      { label: 'Edit brief', value: 'edit' },
+      { label: 'Looks good — submit', value: 'submit', tone: 'primary' },
+      { label: 'Edit my brief', value: 'edit' },
       { label: 'Start over', value: 'restart' },
     ], function(value) {
       if (value === 'submit') finish();
@@ -1007,7 +1023,8 @@ if (typeof Lenis === 'undefined') {
     step = 'done';
     setInput(false);
     saveLead();
-    await botSay('Done. Your enquiry has been saved for the studio team. You can also continue on WhatsApp for a faster response.', 160);
+    const first = lead.name ? ', <strong>' + escText(lead.name.split(/\s+/)[0]) + '</strong>' : '';
+    await botSay('All set' + first + ' ✓ — the studio has your brief and will reply within 24 hours. Want to continue on WhatsApp for a faster response?', 160);
     showActionButtons();
   }
 
@@ -1017,6 +1034,36 @@ if (typeof Lenis === 'undefined') {
     lead = freshLead();
     started = true;
     startFlow();
+  }
+
+  /* ── EmailJS lead notification (chatbot-only) ─────────────────
+     Reuses the Service ID + Public Key from the admin security alert
+     setup; uses a separate template tailored for chatbot enquiries. */
+  const CHATBOT_PUBLIC_KEY  = 'A9UB50GFYH9GWqzop';
+  const CHATBOT_SERVICE_ID  = 'service_pgo5n2q';
+  const CHATBOT_TEMPLATE_ID = 'template_mq0pyok';
+  const CHATBOT_NOTIFY_TO   = 'modformarchitects@gmail.com';
+
+  function sendChatbotLeadEmail(record) {
+    if (typeof emailjs === 'undefined' || !CHATBOT_PUBLIC_KEY || !CHATBOT_SERVICE_ID || !CHATBOT_TEMPLATE_ID) return;
+    try { emailjs.init({ publicKey: CHATBOT_PUBLIC_KEY }); } catch (_) {}
+    const submittedAt = new Date(record.ts || Date.now()).toLocaleString('en-IN', {
+      dateStyle: 'medium', timeStyle: 'short',
+    });
+    emailjs.send(CHATBOT_SERVICE_ID, CHATBOT_TEMPLATE_ID, {
+      to_email:     CHATBOT_NOTIFY_TO,
+      from_name:    record.name || 'Website visitor',
+      from_email:   record.email || '',
+      phone:        record.phone || '',
+      project_type: record.project || '',
+      timeline:     record.timeline || '',
+      message:      record.message || '',
+      submitted_at: submittedAt,
+      reply_to:     record.email || '',
+    }).then(
+      function() { /* sent — lead already saved */ },
+      function(err) { console.warn('[Chatbot Lead] Email failed:', err); }
+    );
   }
 
   function saveLead() {
@@ -1031,6 +1078,7 @@ if (typeof Lenis === 'undefined') {
         email: contact.indexOf('@') > -1 ? contact : '',
         phone: contact.indexOf('@') > -1 ? '' : contact,
         project: lead.service || lead.intent || 'Website enquiry',
+        timeline: lead.timeline || '',
         message: lead.project || 'No brief shared.',
       };
       const leads = JSON.parse(localStorage.getItem('ars_leads') || '[]');
@@ -1038,6 +1086,7 @@ if (typeof Lenis === 'undefined') {
       if (leads.length > 500) leads.splice(500);
       localStorage.setItem('ars_leads', JSON.stringify(leads));
       if (window.ModformDB && window.ModformDB.enabled) window.ModformDB.insertLead(leadRecord);
+      sendChatbotLeadEmail(leadRecord);
     } catch (_) {}
   }
 
