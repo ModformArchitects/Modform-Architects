@@ -611,7 +611,9 @@ input, textarea, select { font-family: var(--sans); font-weight: 300; color: var
 
 @media (max-width: 768px) {
   .sidebar {
-    transform: translateX(calc(-1 * var(--sb-w)));
+    /* Use -100% so the sidebar fully hides regardless of its computed width
+       (min(82vw, 280px) on phones — was creating a peek of ~40px before). */
+    transform: translateX(-100%);
   }
   .sidebar.open {
     transform: translateX(0);
