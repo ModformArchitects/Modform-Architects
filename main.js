@@ -29,13 +29,21 @@ function imageSizeAttrs(src) {
 (function initTheme() {
   const html = document.documentElement;
   const btn  = document.getElementById('themeToggle');
+  const meta = document.getElementById('metaThemeColor');
   const saved = localStorage.getItem('modform-theme') || 'dark';
   html.dataset.theme = saved;
+
+  const syncMeta = (theme) => {
+    if (!meta) return;
+    meta.setAttribute('content', theme === 'dark' ? '#0d0d0b' : '#fbfaf6');
+  };
+  syncMeta(saved);
 
   btn && btn.addEventListener('click', () => {
     const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
     html.dataset.theme = next;
     localStorage.setItem('modform-theme', next);
+    syncMeta(next);
   });
 })();
 
@@ -162,7 +170,30 @@ window.addEventListener('scroll', () => {
    ══════════════════════════════════════════════════════════ */
 let lenis;
 (function initLenis() {
-  if (typeof Lenis === 'undefined') return;
+  const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Always wire anchor smooth-scroll with nav offset (works with or without Lenis)
+  const scrollToAnchor = (target) => {
+    const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 60;
+    const y = target.getBoundingClientRect().top + window.pageYOffset - navH;
+    window.scrollTo({ top: y, behavior: reducedMotion ? 'auto' : 'smooth' });
+  };
+
+  // Skip Lenis on touch devices (native momentum is smoother) or when user requests reduced motion
+  if (typeof Lenis === 'undefined' || isTouch || reducedMotion) {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href === '#' || href.length < 2) return;
+        const target = document.querySelector(href);
+        if (!target) return;
+        e.preventDefault();
+        scrollToAnchor(target);
+      });
+    });
+    return;
+  }
 
   lenis = new Lenis({
     duration: 1.1,

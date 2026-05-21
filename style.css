@@ -150,6 +150,18 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scroll-padding-top: var(--nav-h);
+}
+@media (hover: none) and (pointer: coarse) {
+  html { scroll-behavior: smooth; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
 }
 
 body {
@@ -164,6 +176,7 @@ body {
 }
 
 img { display: block; width: 100%; height: 100%; object-fit: cover; }
+picture { display: contents; }
 a { color: inherit; text-decoration: none; }
 button { cursor: none; background: none; border: none; }
 ul { list-style: none; }
@@ -2328,4 +2341,130 @@ body { overflow-x: hidden; }
 
   /* Marquee — speed fine, just ensure no overflow */
   .marquee-band { overflow: hidden; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   MOBILE STICKY ACTION BAR (Call / WhatsApp / Enquire)
+   Visible only ≤ 768px. Replaces wa-float on mobile.
+   ════════════════════════════════════════════════════════════ */
+.mobile-action-bar { display: none; }
+
+@media (max-width: 768px) {
+  .mobile-action-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 950;
+    background: var(--bg-nav);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    padding: .5rem .4rem calc(.5rem + env(safe-area-inset-bottom, 0px));
+    gap: .25rem;
+  }
+  .mab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .25rem;
+    min-height: 52px;
+    padding: .5rem .25rem;
+    border-radius: 10px;
+    color: var(--fg);
+    font-family: var(--sans);
+    font-size: .68rem;
+    font-weight: 500;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background .2s, color .2s, transform .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mab-btn:active { transform: scale(.96); background: var(--fg-08); }
+  .mab-btn svg { opacity: .85; }
+  .mab-btn--whatsapp { color: #25d366; }
+  .mab-btn--primary {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .mab-btn--primary:active { background: var(--accent); filter: brightness(.92); }
+
+  /* Make room above the bar for content & other floats */
+  body { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+  .wa-float { display: none; }
+  .chatbot { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); left: 1rem; }
+  .back-to-top { bottom: calc(80px + env(safe-area-inset-bottom, 0px)); right: 1rem; }
+  .footer { padding-bottom: 1.5rem; }
+}
+
+/* Hide bar in landscape on very short viewports to reclaim vertical space */
+@media (max-width: 768px) and (orientation: landscape) and (max-height: 480px) {
+  .mobile-action-bar { display: none; }
+  body { padding-bottom: 0; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   MOBILE FORM POLISH — prevent iOS focus-zoom, brand tap highlight
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .form-group input,
+  .form-group select,
+  .form-group textarea { font-size: 16px; }
+
+  html { -webkit-tap-highlight-color: rgba(200,169,110,0.18); }
+  [data-theme="light"] { -webkit-tap-highlight-color: rgba(0,122,104,0.16); }
+}
+
+/* ════════════════════════════════════════════════════════════
+   MOBILE SPACING + TOUCH TARGETS (≤768px)
+   Tighten vertical rhythm; guarantee 44×44 px interactive targets.
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Section vertical rhythm — was clamp(5rem, 12vw, 11rem) */
+  .section { padding: clamp(3.25rem, 9vw, 5.5rem) 0; }
+
+  /* Touch targets — nav */
+  .nav-hamburger {
+    width: 44px; height: 44px;
+    align-items: center; justify-content: center;
+    padding: 0;
+  }
+  .nav-cta { min-height: 44px; display: inline-flex; align-items: center; }
+  .theme-toggle { width: 44px; height: 44px; }
+  .nav-link { padding: .5rem .75rem; min-height: 44px; display: inline-flex; align-items: center; }
+
+  /* Filter pills */
+  .filter-btn { min-height: 44px; padding: .65rem 1.1rem; }
+
+  /* Footer links */
+  .footer-nav-col a { padding: .5rem 0; display: inline-block; min-height: 36px; }
+
+  /* Form submit */
+  .form-submit { min-height: 52px; }
+
+  /* Contact map height — was 320px on tablet, no mobile override */
+  .contact-map iframe { height: 260px; }
+
+  /* Marquee — slow down a touch on small screens */
+  .marquee-track { animation-duration: 56s; }
+
+  /* Lightbox close — already large, ensure tap area */
+  .lightbox-close { min-width: 44px; min-height: 44px; }
+
+  /* Focus-visible polish for keyboard users on bluetooth keyboards */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+/* Extra-small phones */
+@media (max-width: 480px) {
+  .section { padding: 3rem 0; }
+  .nav-logo { font-size: .85rem; letter-spacing: .18em; }
 }

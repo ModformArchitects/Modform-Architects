@@ -2,7 +2,10 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d0d0b" id="metaThemeColor" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="description" content="Modform Architects — Bespoke architectural & interior design studio in Lucknow. Sustainable luxury design by Ar. Shrishtika Pal. Vastu Shastra, residential, commercial, turnkey." />
   <meta name="keywords" content="Modform Architects, Shrishtika Pal, architect Lucknow, interior design India, Vastu Shastra, sustainable architecture, luxury architect India, residential design" />
   <meta property="og:title" content="Modform Architects — Designed with intention. Built for the future." />
@@ -49,7 +52,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
-  <!-- Lenis smooth scroll -->
+  <!-- Lenis smooth scroll — init is gated in main.js (skipped on touch / reduced-motion) -->
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -84,7 +87,10 @@
   <!-- ═══ LOADER ══ -->
   <div class="loader" id="loader">
     <div class="loader-inner">
-      <img class="loader-logo" src="assets/modformlogo.jpg" alt="Modform Architects" width="1254" height="1254" />
+      <picture>
+        <source type="image/webp" srcset="assets/modformlogo.webp" />
+        <img class="loader-logo" src="assets/modformlogo.jpg" alt="Modform Architects" width="1254" height="1254" />
+      </picture>
       <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
     </div>
   </div>
@@ -120,14 +126,21 @@
   <!-- ═══ HERO ══ -->
   <section class="hero" id="hero">
     <div class="hero-bg hero-bg--portrait">
-      <img
-        src="assets/projects/hero-city.jpeg"
-        alt="Architectural frame overlooking a modern city skyline"
-        class="hero-img hero-img--portrait"
-        loading="eager"
-        width="736"
-        height="1104"
-      />
+      <picture>
+        <source type="image/webp" srcset="assets/projects/hero-city-480.webp 480w, assets/projects/hero-city.webp 736w" sizes="100vw" />
+        <img
+          src="assets/projects/hero-city.jpeg"
+          srcset="assets/projects/hero-city-480.jpeg 480w, assets/projects/hero-city.jpeg 736w"
+          sizes="100vw"
+          alt="Architectural frame overlooking a modern city skyline"
+          class="hero-img hero-img--portrait"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          width="736"
+          height="1104"
+        />
+      </picture>
       <div class="hero-overlay"></div>
     </div>
     <div class="hero-glow"></div>
@@ -181,7 +194,10 @@
           </h2>
           <div class="principal-profile reveal">
             <figure class="principal-portrait" id="principalPortrait">
-              <img src="assets/founding-principal-avatar.jpeg" alt="Ar. Shrishtika Pal, Founding Principal of Modform Architects" loading="lazy" width="420" height="420" />
+              <picture>
+                <source type="image/webp" srcset="assets/founding-principal-avatar.webp" />
+                <img src="assets/founding-principal-avatar.jpeg" alt="Ar. Shrishtika Pal, Founding Principal of Modform Architects" loading="lazy" decoding="async" width="420" height="420" />
+              </picture>
             </figure>
             <div class="principal-profile-copy">
               <span>Founding Principal</span>
@@ -212,11 +228,17 @@
 
       <div class="about-image-pair reveal">
         <div class="about-img-wrap about-img-tall about-img-clickable" data-src="assets/projects/residence-04.jpeg" data-caption="Contemporary residential facade">
-          <img src="assets/projects/residence-04.jpeg" alt="Contemporary residential facade with balcony planting" loading="lazy" width="1280" height="914" />
+          <picture>
+            <source type="image/webp" srcset="assets/projects/residence-04-480.webp 480w, assets/projects/residence-04-768.webp 768w, assets/projects/residence-04.webp 1280w" sizes="(max-width: 1024px) 100vw, 50vw" />
+            <img src="assets/projects/residence-04.jpeg" srcset="assets/projects/residence-04-480.jpeg 480w, assets/projects/residence-04-768.jpeg 768w, assets/projects/residence-04.jpeg 1280w" sizes="(max-width: 1024px) 100vw, 50vw" alt="Contemporary residential facade with balcony planting" loading="lazy" decoding="async" width="1280" height="914" />
+          </picture>
           <div class="about-img-zoom-hint">⊕</div>
         </div>
         <div class="about-img-wrap about-img-short about-img-clickable" data-src="assets/projects/residence-05.jpeg" data-caption="Layered modern home elevation">
-          <img src="assets/projects/residence-05.jpeg" alt="Layered modern home elevation with warm facade lighting" loading="lazy" width="1280" height="1280" />
+          <picture>
+            <source type="image/webp" srcset="assets/projects/residence-05-480.webp 480w, assets/projects/residence-05-768.webp 768w, assets/projects/residence-05.webp 1280w" sizes="(max-width: 1024px) 100vw, 50vw" />
+            <img src="assets/projects/residence-05.jpeg" srcset="assets/projects/residence-05-480.jpeg 480w, assets/projects/residence-05-768.jpeg 768w, assets/projects/residence-05.jpeg 1280w" sizes="(max-width: 1024px) 100vw, 50vw" alt="Layered modern home elevation with warm facade lighting" loading="lazy" decoding="async" width="1280" height="1280" />
+          </picture>
           <div class="about-img-caption">Modern residence — facade study</div>
         </div>
       </div>
@@ -244,7 +266,10 @@
 
         <article class="project-card project-card--large" data-category="residential" data-index="0">
           <div class="project-img-wrap">
-            <img src="assets/projects/residence-01.jpeg" alt="Residential Project 01" loading="lazy" class="project-img" width="1280" height="800" />
+            <picture>
+              <source type="image/webp" srcset="assets/projects/residence-01-480.webp 480w, assets/projects/residence-01-768.webp 768w, assets/projects/residence-01.webp 1280w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 66vw" />
+              <img src="assets/projects/residence-01.jpeg" srcset="assets/projects/residence-01-480.jpeg 480w, assets/projects/residence-01-768.jpeg 768w, assets/projects/residence-01.jpeg 1280w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 66vw" alt="Residential Project 01" loading="lazy" decoding="async" class="project-img" width="1280" height="800" />
+            </picture>
             <div class="project-hover-overlay">
               <span class="project-view-label">View Project</span>
             </div>
@@ -261,7 +286,10 @@
 
         <article class="project-card" data-category="residential" data-index="1">
           <div class="project-img-wrap">
-            <img src="assets/projects/residence-02.jpeg" alt="Residential Project 02" loading="lazy" class="project-img" width="1280" height="1280" />
+            <picture>
+              <source type="image/webp" srcset="assets/projects/residence-02-480.webp 480w, assets/projects/residence-02-768.webp 768w, assets/projects/residence-02.webp 1280w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+              <img src="assets/projects/residence-02.jpeg" srcset="assets/projects/residence-02-480.jpeg 480w, assets/projects/residence-02-768.jpeg 768w, assets/projects/residence-02.jpeg 1280w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" alt="Residential Project 02" loading="lazy" decoding="async" class="project-img" width="1280" height="1280" />
+            </picture>
             <div class="project-hover-overlay">
               <span class="project-view-label">View Project</span>
             </div>
@@ -278,7 +306,10 @@
 
         <article class="project-card" data-category="residential" data-index="2">
           <div class="project-img-wrap">
-            <img src="assets/projects/residence-03.jpeg" alt="Residential Project 03" loading="lazy" class="project-img" width="1250" height="893" />
+            <picture>
+              <source type="image/webp" srcset="assets/projects/residence-03-480.webp 480w, assets/projects/residence-03-768.webp 768w, assets/projects/residence-03.webp 1250w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+              <img src="assets/projects/residence-03.jpeg" srcset="assets/projects/residence-03-480.jpeg 480w, assets/projects/residence-03-768.jpeg 768w, assets/projects/residence-03.jpeg 1250w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" alt="Residential Project 03" loading="lazy" decoding="async" class="project-img" width="1250" height="893" />
+            </picture>
             <div class="project-hover-overlay">
               <span class="project-view-label">View Project</span>
             </div>
@@ -295,7 +326,10 @@
 
         <article class="project-card project-card--large" data-category="residential" data-index="3">
           <div class="project-img-wrap">
-            <img src="assets/projects/residence-04.jpeg" alt="Residential Project 04" loading="lazy" class="project-img" width="1280" height="914" />
+            <picture>
+              <source type="image/webp" srcset="assets/projects/residence-04-480.webp 480w, assets/projects/residence-04-768.webp 768w, assets/projects/residence-04.webp 1280w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 66vw" />
+              <img src="assets/projects/residence-04.jpeg" srcset="assets/projects/residence-04-480.jpeg 480w, assets/projects/residence-04-768.jpeg 768w, assets/projects/residence-04.jpeg 1280w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 66vw" alt="Residential Project 04" loading="lazy" decoding="async" class="project-img" width="1280" height="914" />
+            </picture>
             <div class="project-hover-overlay">
               <span class="project-view-label">View Project</span>
             </div>
@@ -312,7 +346,10 @@
 
         <article class="project-card" data-category="residential" data-index="4">
           <div class="project-img-wrap">
-            <img src="assets/projects/residence-05.jpeg" alt="Residential Project 05" loading="lazy" class="project-img" width="1280" height="1280" />
+            <picture>
+              <source type="image/webp" srcset="assets/projects/residence-05-480.webp 480w, assets/projects/residence-05-768.webp 768w, assets/projects/residence-05.webp 1280w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+              <img src="assets/projects/residence-05.jpeg" srcset="assets/projects/residence-05-480.jpeg 480w, assets/projects/residence-05-768.jpeg 768w, assets/projects/residence-05.jpeg 1280w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" alt="Residential Project 05" loading="lazy" decoding="async" class="project-img" width="1280" height="1280" />
+            </picture>
             <div class="project-hover-overlay">
               <span class="project-view-label">View Project</span>
             </div>
@@ -329,7 +366,10 @@
 
         <article class="project-card project-card--large" data-category="residential" data-index="5">
           <div class="project-img-wrap">
-            <img src="assets/projects/residence-02.jpeg" alt="Residential Project 06" loading="lazy" class="project-img" width="1280" height="1280" />
+            <picture>
+              <source type="image/webp" srcset="assets/projects/residence-02-480.webp 480w, assets/projects/residence-02-768.webp 768w, assets/projects/residence-02.webp 1280w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 66vw" />
+              <img src="assets/projects/residence-02.jpeg" srcset="assets/projects/residence-02-480.jpeg 480w, assets/projects/residence-02-768.jpeg 768w, assets/projects/residence-02.jpeg 1280w" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 66vw" alt="Residential Project 06" loading="lazy" decoding="async" class="project-img" width="1280" height="1280" />
+            </picture>
             <div class="project-hover-overlay">
               <span class="project-view-label">View Project</span>
             </div>
@@ -537,7 +577,10 @@
   <!-- ═══ FEATURE STRIP ══ -->
   <section class="feature-strip">
     <div class="feature-strip-img">
-      <img src="assets/projects/residence-03.jpeg" alt="Contemporary Indian residence facade" loading="lazy" width="1250" height="893" />
+      <picture>
+        <source type="image/webp" srcset="assets/projects/residence-03-480.webp 480w, assets/projects/residence-03-768.webp 768w, assets/projects/residence-03.webp 1250w" sizes="100vw" />
+        <img src="assets/projects/residence-03.jpeg" srcset="assets/projects/residence-03-480.jpeg 480w, assets/projects/residence-03-768.jpeg 768w, assets/projects/residence-03.jpeg 1250w" sizes="100vw" alt="Contemporary Indian residence facade" loading="lazy" decoding="async" width="1250" height="893" />
+      </picture>
       <div class="feature-strip-overlay"></div>
     </div>
     <div class="feature-strip-text container">
@@ -620,16 +663,16 @@
           <form class="contact-form" id="contactForm" novalidate>
             <div class="form-row">
               <div class="form-group">
-                <input type="text" id="fname" name="name" placeholder=" " autocomplete="name" />
+                <input type="text" id="fname" name="name" placeholder=" " autocomplete="name" enterkeyhint="next" />
                 <label for="fname">Name</label>
               </div>
               <div class="form-group">
-                <input type="email" id="femail" name="email" placeholder=" " autocomplete="email" />
+                <input type="email" id="femail" name="email" placeholder=" " autocomplete="email" inputmode="email" enterkeyhint="next" />
                 <label for="femail">Email</label>
               </div>
             </div>
             <div class="form-group">
-              <input type="tel" id="fphone" name="phone" placeholder=" " autocomplete="tel" />
+              <input type="tel" id="fphone" name="phone" placeholder=" " autocomplete="tel" inputmode="tel" enterkeyhint="next" />
               <label for="fphone">Phone / WhatsApp</label>
             </div>
             <div class="form-group">
@@ -709,6 +752,22 @@
     <button class="lightbox-close" id="lightboxClose" aria-label="Close">×</button>
     <div class="lightbox-content" id="lightboxContent"></div>
   </div>
+
+  <!-- ═══ MOBILE STICKY ACTION BAR ══ -->
+  <nav class="mobile-action-bar" aria-label="Quick contact">
+    <a href="tel:+918318328143" class="mab-btn" aria-label="Call studio">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span>Call</span>
+    </a>
+    <a href="https://wa.me/919452861841?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20your%20architecture%20services." class="mab-btn mab-btn--whatsapp" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+      <span>WhatsApp</span>
+    </a>
+    <a href="#contact" class="mab-btn mab-btn--primary" aria-label="Open contact form">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="m22 6-10 7L2 6"/></svg>
+      <span>Enquire</span>
+    </a>
+  </nav>
 
   <!-- ═══ FLOATING WHATSAPP ══ -->
   <a href="https://wa.me/919452861841?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20your%20architecture%20services." class="wa-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
