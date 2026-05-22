@@ -1228,8 +1228,9 @@ body.cursor-view  .cursor-label { opacity: 1; }
    CONTACT
    ════════════════════════════════════════════════════════════ */
 .contact-grid {
-  display: grid; grid-template-columns: 1fr 1.4fr;
+  display: grid; grid-template-columns: 1fr;
   gap: clamp(3rem,7vw,9rem); align-items: start;
+  max-width: 760px; margin: 0 auto;
 }
 .contact-headline {
   font-family: var(--serif); font-size: clamp(2.2rem,5vw,4.2rem);
